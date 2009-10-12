@@ -1,6 +1,7 @@
 package org.protege.xmlcatalog.entry;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import org.protege.xmlcatalog.XMLCatalog.Prefer;
 public class GroupEntry extends Entry {
     private Prefer prefer;
     private URI xmlBase;
-    private List<Entry> entries;
+    private List<Entry> entries = new ArrayList<Entry>();
 
     public GroupEntry(String id, Prefer prefer, URI xmlBase) {
         super(id);

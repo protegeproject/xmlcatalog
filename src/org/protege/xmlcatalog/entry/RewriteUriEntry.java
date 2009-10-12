@@ -4,22 +4,22 @@ import java.net.URI;
 
 import org.protege.xmlcatalog.EntryVisitor;
 
-public class RewriteSystem extends Entry {
-    private String systemIdStartString;
+public class RewriteUriEntry extends Entry {
+    private String uriStartString;
     private URI rewritePrefix;
-    
-    public RewriteSystem(String id, String systemIdStartString, URI rewritePrefix) {
+
+    public RewriteUriEntry(String id, String uriStartString, URI rewritePrefix) {
         super(id);
-        this.systemIdStartString = systemIdStartString;
+        this.uriStartString = uriStartString;
         this.rewritePrefix = rewritePrefix;
     }
-
-    public String getSystemIdStartString() {
-        return systemIdStartString;
+    
+    public String getUriStartString() {
+        return uriStartString;
     }
 
-    public void setSystemIdStartString(String systemIdStartString) {
-        this.systemIdStartString = systemIdStartString;
+    public void setUriStartString(String uriStartString) {
+        this.uriStartString = uriStartString;
     }
 
     public URI getRewritePrefix() {
@@ -34,4 +34,5 @@ public class RewriteSystem extends Entry {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
+
 }

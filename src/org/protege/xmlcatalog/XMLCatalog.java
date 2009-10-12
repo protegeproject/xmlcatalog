@@ -1,6 +1,7 @@
 package org.protege.xmlcatalog;
 
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -13,7 +14,7 @@ public class XMLCatalog {
     private String id;
     private Prefer prefer;
     private URI xmlBase;
-    private List<Entry> entries;
+    private List<Entry> entries = new ArrayList<Entry>();
     
     public XMLCatalog(String id, Prefer prefer, URI xmlBase) {
         this.id = id;
