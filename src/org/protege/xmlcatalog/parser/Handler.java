@@ -78,16 +78,6 @@ public class Handler extends DefaultHandler {
     private XMLCatalog catalog;
     private Stack<GroupEntry> groupStack = new Stack<GroupEntry>();
     
-    public static XMLCatalog parseDocument(URL catalog) throws IOException, ParserConfigurationException, SAXException {
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        Handler handler = new Handler();
-        InputStream is = null;
-        is = catalog.openStream();
-        SAXParser parser = factory.newSAXParser();
-        parser.parse(is, handler);
-        return handler.getCatalog();
-    }
-    
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (qName.equals(CATALOG_ELEMENT)) {
