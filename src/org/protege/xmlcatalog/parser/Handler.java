@@ -10,8 +10,8 @@ import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.protege.xmlcatalog.Prefer;
 import org.protege.xmlcatalog.XMLCatalog;
-import org.protege.xmlcatalog.XMLCatalog.Prefer;
 import org.protege.xmlcatalog.entry.DelegatePublicEntry;
 import org.protege.xmlcatalog.entry.DelegateSystemEntry;
 import org.protege.xmlcatalog.entry.DelegateUriEntry;

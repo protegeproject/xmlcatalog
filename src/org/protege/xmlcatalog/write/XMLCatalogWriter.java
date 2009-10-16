@@ -1,54 +1,75 @@
 package org.protege.xmlcatalog.write;
 
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Result;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+
+import org.protege.xmlcatalog.Prefer;
 import org.protege.xmlcatalog.XMLCatalog;
 import org.protege.xmlcatalog.parser.Handler;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 
 public class XMLCatalogWriter {
-    public static String XML_CATALOG_NS="xmlns=\"urn:oasis:names:tc:entity:xmlns:xml:catalog\"";
+    public static String XML_CATALOG_NS="urn:oasis:names:tc:entity:xmlns:xml:catalog";
     
     private XMLCatalog catalog;
-    private XMLWriter out;
     private Writer out;
     
     public XMLCatalogWriter(XMLCatalog catalog, Writer out) {
         this.catalog = catalog;
-        this.out = new XMLWriter(out, 0);
+        this.out = out;
     }
     
-    public void write() throws IOException {
-        openDocument();
-        closeDocument();
-    }
-    
-    private void openDocument() throws IOException {
-        out.startElement(XML_CATALOG_NS);
+    public  void write() throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        DocumentBuilder builder = dbf.newDocumentBuilder();
+        Document document = builder.newDocument();
+        Element root = document.createElementNS(XML_CATALOG_NS, Handler.CATALOG_ELEMENT);
         if (catalog.getId() != null) {
-            out.writeAttribute(Handler.ID_ATTRIBUTE, catalog.getId());
+            root.setAttribute(Handler.ID_ATTRIBUTE, catalog.getId());
         }
         if (catalog.getXmlBase() != null) {
-            out.writeAttribute(Handler.XML_BASE_ATTRIBUTE, catalog.getXmlBase().toString());
+            root.setAttribute(Handler.XML_BASE_ATTRIBUTE, catalog.getXmlBase().toString());
         }
         if (catalog.getPrefer() != null) {
-            String p = null;
-            switch (catalog.getPrefer()) {
-            case PUBLIC:
-                p = Handler.PREFER_PUBLIC_VALUE;
-                break;
-            case SYSTEM:
-                p = Handler.PREFER_SYSTEM_VALUE;
-                break;
-            }
-            out.writeAttribute(Handler.PREFER_ATTRIBUTE, p);
+            root.setAttribute(Handler.PREFER_ATTRIBUTE, catalog.getPrefer().getName());
         }
+        Element group = document.createElement(Handler.GROUP_ELEMENT);
+        root.appendChild(group);
+        document.appendChild(root);
+        save(document);
     }
     
-    private void closeDocument() {
-        out.endElement();
+    private void save(Document document) throws TransformerFactoryConfigurationError, TransformerException {
+        Source source = new DOMSource(document);
+        Result result = new StreamResult(out);
+        TransformerFactory factory = TransformerFactory.newInstance();
+        factory.setAttribute("indent-number", 4);
+        Transformer xformer = factory.newTransformer();
+        xformer.setOutputProperty(OutputKeys.METHOD, "xml");
+        xformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        xformer.transform(source, result);
     }
-    
+  
+    public static void main(String[] args) throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+        XMLCatalog catalog = new XMLCatalog("id1", Prefer.PUBLIC, null);
 
-
+        Writer writer = new OutputStreamWriter(System.out);
+        XMLCatalogWriter xwriter = new XMLCatalogWriter(catalog, writer);
+        xwriter.write();
+    }
 }

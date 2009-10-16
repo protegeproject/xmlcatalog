@@ -8,9 +8,6 @@ import java.util.List;
 import org.protege.xmlcatalog.entry.Entry;
 
 public class XMLCatalog {
-    public enum Prefer {
-        PUBLIC, SYSTEM;
-    }
     private String id;
     private Prefer prefer;
     private URI xmlBase;

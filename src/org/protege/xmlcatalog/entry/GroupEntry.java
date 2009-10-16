@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.protege.xmlcatalog.EntryVisitor;
-import org.protege.xmlcatalog.XMLCatalog.Prefer;
+import org.protege.xmlcatalog.Prefer;
 
 public class GroupEntry extends Entry {
     private Prefer prefer;
