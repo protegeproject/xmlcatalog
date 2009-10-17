@@ -3,13 +3,14 @@ package org.protege.xmlcatalog.entry;
 import java.net.URI;
 
 import org.protege.xmlcatalog.EntryVisitor;
+import org.protege.xmlcatalog.XmlBaseContext;
 
 public class RewriteSystemEntry extends Entry {
     private String systemIdStartString;
     private URI rewritePrefix;
     
-    public RewriteSystemEntry(String id, String systemIdStartString, URI rewritePrefix) {
-        super(id);
+    public RewriteSystemEntry(String id, XmlBaseContext xmlBaseContext, String systemIdStartString, URI rewritePrefix) {
+        super(id, xmlBaseContext);
         this.systemIdStartString = systemIdStartString;
         this.rewritePrefix = rewritePrefix;
     }

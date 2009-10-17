@@ -3,17 +3,14 @@ package org.protege.xmlcatalog.entry;
 import java.net.URI;
 
 import org.protege.xmlcatalog.EntryVisitor;
+import org.protege.xmlcatalog.XmlBaseContext;
 
-public class PublicEntry extends Entry {
+public class PublicEntry extends AbstractUriEntry {
     private String publicId;
-    private URI uri;
-    private URI xmlbase;
     
-    public PublicEntry(String id, String publicId, URI uri, URI xmlbase) {
-        super(id);
+    public PublicEntry(String id, XmlBaseContext xmlBaseContext, String publicId, URI uri, URI xmlbase) {
+        super(id, xmlBaseContext, uri, xmlbase);
         this.publicId = publicId;
-        this.uri = uri;
-        this.xmlbase = xmlbase;
     }
     
     public String getPublicId() {
@@ -22,22 +19,6 @@ public class PublicEntry extends Entry {
     
     public void setPublicId(String publicId) {
         this.publicId = publicId;
-    }
-
-    public URI getUri() {
-        return uri;
-    }
-
-    public void setUri(URI uri) {
-        this.uri = uri;
-    }
-
-    public URI getXmlbase() {
-        return xmlbase;
-    }
-
-    public void setXmlbase(URI xmlbase) {
-        this.xmlbase = xmlbase;
     }
 
     @Override

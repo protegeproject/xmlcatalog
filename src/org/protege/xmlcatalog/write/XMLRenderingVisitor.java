@@ -3,7 +3,7 @@ package org.protege.xmlcatalog.write;
 import java.net.URI;
 
 import org.protege.xmlcatalog.EntryVisitor;
-import org.protege.xmlcatalog.entry.DelegateEntry;
+import org.protege.xmlcatalog.entry.AbstractDelegateEntry;
 import org.protege.xmlcatalog.entry.DelegatePublicEntry;
 import org.protege.xmlcatalog.entry.DelegateSystemEntry;
 import org.protege.xmlcatalog.entry.DelegateUriEntry;
@@ -35,42 +35,71 @@ public class XMLRenderingVisitor implements EntryVisitor {
 
     public void visit(GroupEntry entry) {
         Element groupElement = document.createElement(Handler.GROUP_ELEMENT);
+        addId(groupElement, entry);
         if (entry.getPrefer() != null) {
             groupElement.setAttribute(Handler.PREFER_ATTRIBUTE, entry.getPrefer().getName());
         }
         if (entry.getXmlBase() != null) {
             groupElement.setAttribute(Handler.XML_BASE_ATTRIBUTE, entry.getXmlBase().toString());
         }
+        root.appendChild(groupElement);
     }
 
     public void visit(PublicEntry entry) {
-        // TODO Auto-generated method stub
-        
+        Element publicElement = document.createElement(Handler.PUBLIC_ELEMENT);
+        addId(publicElement, entry);
+        publicElement.setAttribute(Handler.PUBLIC_ID_ATTRIBUTE, entry.getPublicId());
+        publicElement.setAttribute(Handler.URI_ATTRIBUTE, entry.getUri().toString());
+        if (entry.getXmlBase() != null) {
+            publicElement.setAttribute(Handler.XML_BASE_ATTRIBUTE, entry.getXmlBase().toString());
+        }
+        root.appendChild(publicElement);
     }
 
     public void visit(SystemEntry entry) {
-        // TODO Auto-generated method stub
-        
+        Element systemElement = document.createElement(Handler.SYSTEM_ELEMENT);
+        addId(systemElement, entry);
+        systemElement.setAttribute(Handler.SYSTEM_ID_ATTRIBUTE, entry.getSystemId());
+        systemElement.setAttribute(Handler.URI_ATTRIBUTE, entry.getUri().toString());
+        if (entry.getXmlBase() != null) {
+            systemElement.setAttribute(Handler.XML_BASE_ATTRIBUTE, entry.getXmlBase().toString());
+        }
+        root.appendChild(systemElement); 
     }
 
     public void visit(RewriteSystemEntry entry) {
-        // TODO Auto-generated method stub
-        
+        Element rewriteSystemElement = document.createElement(Handler.REWRITE_SYSTEM_ELEMENT);
+        addId(rewriteSystemElement, entry);
+        rewriteSystemElement.setAttribute(Handler.SYSTEM_ID_START_ATTRIBUTE, entry.getSystemIdStartString());
+        rewriteSystemElement.setAttribute(Handler.REWRITE_PREFIX_ATTRIBUTE, entry.getRewritePrefix().toString());
+        root.appendChild(rewriteSystemElement); 
     }
 
     public void visit(DelegatePublicEntry entry) {
-        // TODO Auto-generated method stub
-        
+        Element delgatePublicElement = document.createElement(Handler.DELEGATE_PUBLIC_ELEMENT);
+        addId(delgatePublicElement, entry);
+        addDelegate(delgatePublicElement, entry);
+        delgatePublicElement.setAttribute(Handler.PUBLIC_ID_START_ATTRIBUTE, entry.getPublicIdStartString());
+        root.appendChild(delgatePublicElement);
     }
 
     public void visit(DelegateSystemEntry entry) {
-        // TODO Auto-generated method stub
-        
+        Element delegateSystemElement = document.createElement(Handler.DELEGATE_SYSTEM_ELEMENT);
+        addId(delegateSystemElement, entry);
+        addDelegate(delegateSystemElement, entry);
+        delegateSystemElement.setAttribute(Handler.SYSTEM_ID_START_ATTRIBUTE, entry.getSystemIdStartString());
+        root.appendChild(delegateSystemElement);
     }
 
     public void visit(UriEntry entry) {
-        // TODO Auto-generated method stub
-        
+        Element uriElement = document.createElement(Handler.URI_ELEMENT);
+        addId(uriElement, entry);
+        uriElement.setAttribute(Handler.URI_NAME_ATTRIBUTE, entry.getName());
+        uriElement.setAttribute(Handler.URI_ELEMENT, entry.getUri().toString());
+        if (entry.getXmlBase() != null) {
+            uriElement.setAttribute(Handler.XML_BASE_ATTRIBUTE, entry.getXmlBase().toString());
+        }
+        root.appendChild(uriElement);
     }
 
     public void visit(RewriteUriEntry entry) {
@@ -94,9 +123,9 @@ public class XMLRenderingVisitor implements EntryVisitor {
         }
     }
     
-    private void addDelegate(Element entryElement, DelegateEntry delegateEntry) {
-        if (delegateEntry.getXmlbase() != null) {
-            entryElement.setAttribute(Handler.XML_BASE_ATTRIBUTE, delegateEntry.getXmlbase().toString());
+    private void addDelegate(Element entryElement, AbstractDelegateEntry delegateEntry) {
+        if (delegateEntry.getXmlBase() != null) {
+            entryElement.setAttribute(Handler.XML_BASE_ATTRIBUTE, delegateEntry.getXmlBase().toString());
         }
         entryElement.setAttribute(Handler.CATALOG_ATTRIBUTE, delegateEntry.getCatalog().toString());
     }

@@ -11,6 +11,7 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.protege.xmlcatalog.Prefer;
+import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.XMLCatalog;
 import org.protege.xmlcatalog.entry.DelegatePublicEntry;
 import org.protege.xmlcatalog.entry.DelegateSystemEntry;
@@ -74,68 +75,85 @@ public class Handler extends DefaultHandler {
     public final static String PREFER_PUBLIC_VALUE       = "public";
     public final static String PREFER_SYSTEM_VALUE       = "system";
 
-
     private XMLCatalog catalog;
+    private XmlBaseContext outerContext;
     private Stack<GroupEntry> groupStack = new Stack<GroupEntry>();
+    
+    public Handler() {
+        
+    }
+    
+    public Handler(XmlBaseContext context) {
+        outerContext = context;
+    }
     
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
         if (qName.equals(CATALOG_ELEMENT)) {
-            catalog = new XMLCatalog(getId(attributes), getPrefer(attributes), getXmlBase(attributes));
+            catalog = new XMLCatalog(getId(attributes), outerContext, getPrefer(attributes), getXmlBase(attributes));
         }
         else if (qName.equals(GROUP_ELEMENT)) {
-            GroupEntry group = new GroupEntry(getId(attributes), getPrefer(attributes),  getXmlBase(attributes));
+            GroupEntry group = new GroupEntry(getId(attributes), getContext(), getPrefer(attributes),  getXmlBase(attributes));
             addEntry(group);
             groupStack.push(group);
         }
         else if (qName.equals(PUBLIC_ELEMENT)) {
             addEntry(new PublicEntry(getId(attributes), 
+                                     getContext(),
                                      attributes.getValue(PUBLIC_ID_ATTRIBUTE), 
                                      URI.create(attributes.getValue(URI_ATTRIBUTE)),
                                      getXmlBase()));
         }
         else if (qName.equals(SYSTEM_ELEMENT)) {
             addEntry(new SystemEntry(getId(attributes), 
+                                     getContext(),
                                      attributes.getValue(SYSTEM_ID_ATTRIBUTE), 
                                      URI.create(attributes.getValue(URI_ATTRIBUTE)),
                                      getXmlBase()));
         }
         else if (qName.equals(REWRITE_SYSTEM_ELEMENT)) {
             addEntry(new RewriteSystemEntry(getId(attributes), 
+                                            getContext(),
                                             attributes.getValue(SYSTEM_ID_START_ATTRIBUTE), 
                                             URI.create(attributes.getValue(REWRITE_PREFIX_ATTRIBUTE))));
         }
         else  if (qName.equals(DELEGATE_PUBLIC_ELEMENT)) {
             addEntry(new DelegatePublicEntry(getId(attributes),
+                                             getContext(),
                                              attributes.getValue(PUBLIC_ID_START_ATTRIBUTE),
                                              URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
                                              getXmlBase()));
         }
         else  if (qName.equals(DELEGATE_SYSTEM_ELEMENT)) {
             addEntry(new DelegateSystemEntry(getId(attributes),
+                                             getContext(),
                                              attributes.getValue(SYSTEM_ID_START_ATTRIBUTE),
                                              URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
                                              getXmlBase()));
         }
         else  if (qName.equals(URI_ELEMENT)) {
             addEntry(new UriEntry(getId(attributes),
+                                  getContext(),
                                   attributes.getValue(URI_NAME_ATTRIBUTE),
                                   URI.create(attributes.getValue(URI_ATTRIBUTE)),
                                   getXmlBase()));
         }
         else  if (qName.equals(REWRITE_URI_ELEMENT)) {
             addEntry(new RewriteUriEntry(getId(attributes),
+                                         getContext(),
                                          attributes.getValue(URI_START_STRING),
                                          URI.create(attributes.getValue(REWRITE_PREFIX_ATTRIBUTE))));
         }
         else  if (qName.equals(DELEGATE_URI_ELEMENT)) {
             addEntry(new DelegateUriEntry(getId(attributes),
+                                          getContext(),
                                           attributes.getValue(URI_START_STRING),
                                           URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
                                           getXmlBase()));
         }
         else if (qName.equals(NEXT_CATALOG_ELEMENT)) {
             addEntry(new NextCatalogEntry(getId(attributes), 
+                                          getContext(),
                                           URI.create(attributes.getValue(CATALOG_ATTRIBUTE)), 
                                           getXmlBase()));
         }
@@ -211,5 +229,14 @@ public class Handler extends DefaultHandler {
             return null;
         }
         else return getXmlBase();
+    }
+    
+    private XmlBaseContext getContext() {
+        if (groupStack.isEmpty()) {
+            return catalog;
+        }
+        else {
+            return groupStack.peek();
+        }
     }
 }

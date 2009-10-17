@@ -66,7 +66,7 @@ public class XMLCatalogWriter {
     }
   
     public static void main(String[] args) throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
-        XMLCatalog catalog = new XMLCatalog("id1", Prefer.PUBLIC, null);
+        XMLCatalog catalog = new XMLCatalog("id1", null, Prefer.PUBLIC, null);
 
         Writer writer = new OutputStreamWriter(System.out);
         XMLCatalogWriter xwriter = new XMLCatalogWriter(catalog, writer);

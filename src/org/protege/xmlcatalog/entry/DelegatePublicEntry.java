@@ -3,12 +3,13 @@ package org.protege.xmlcatalog.entry;
 import java.net.URI;
 
 import org.protege.xmlcatalog.EntryVisitor;
+import org.protege.xmlcatalog.XmlBaseContext;
 
-public class DelegatePublicEntry extends DelegateEntry {
+public class DelegatePublicEntry extends AbstractDelegateEntry {
     private String publicIdStartString;
 
-    public DelegatePublicEntry(String id, String publicIdStartString, URI catalog, URI xmlbase) {
-        super(id, catalog, xmlbase);
+    public DelegatePublicEntry(String id, XmlBaseContext xmlBaseContext, String publicIdStartString, URI catalog, URI xmlbase) {
+        super(id, xmlBaseContext, catalog, xmlbase);
         this.publicIdStartString = publicIdStartString;
     }
 

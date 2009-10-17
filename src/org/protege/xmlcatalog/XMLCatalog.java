@@ -7,14 +7,16 @@ import java.util.List;
 
 import org.protege.xmlcatalog.entry.Entry;
 
-public class XMLCatalog {
+public class XMLCatalog implements XmlBaseContext {
     private String id;
+    private XmlBaseContext context;
     private Prefer prefer;
     private URI xmlBase;
     private List<Entry> entries = new ArrayList<Entry>();
     
-    public XMLCatalog(String id, Prefer prefer, URI xmlBase) {
+    public XMLCatalog(String id, XmlBaseContext context, Prefer prefer, URI xmlBase) {
         this.id = id;
+        this.context = context;
         this.prefer = prefer;
         this.xmlBase = xmlBase;
     }
@@ -25,6 +27,10 @@ public class XMLCatalog {
 
     public void setId(String id) {
         this.id = id;
+    }
+    
+    public XmlBaseContext getXmlBaseContext() {
+        return context;
     }
 
     public Prefer getPrefer() {

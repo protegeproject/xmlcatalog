@@ -7,14 +7,15 @@ import java.util.List;
 
 import org.protege.xmlcatalog.EntryVisitor;
 import org.protege.xmlcatalog.Prefer;
+import org.protege.xmlcatalog.XmlBaseContext;
 
-public class GroupEntry extends Entry {
+public class GroupEntry extends Entry implements XmlBaseContext {
     private Prefer prefer;
     private URI xmlBase;
     private List<Entry> entries = new ArrayList<Entry>();
 
-    public GroupEntry(String id, Prefer prefer, URI xmlBase) {
-        super(id);
+    public GroupEntry(String id, XmlBaseContext xmlBaseContext, Prefer prefer, URI xmlBase) {
+        super(id, xmlBaseContext);
         this.prefer = prefer;
         this.xmlBase = xmlBase;
     }
