@@ -1,18 +1,11 @@
 package org.protege.xmlcatalog.parser;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
-import java.net.URL;
 import java.util.Stack;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
-
 import org.protege.xmlcatalog.Prefer;
-import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.XMLCatalog;
+import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.entry.DelegatePublicEntry;
 import org.protege.xmlcatalog.entry.DelegateSystemEntry;
 import org.protege.xmlcatalog.entry.DelegateUriEntry;
