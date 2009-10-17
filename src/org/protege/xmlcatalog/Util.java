@@ -5,27 +5,25 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URL;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.protege.xmlcatalog.parser.Handler;
-import org.xml.sax.SAXException;
 
 public class Util {
     
     public static XMLCatalog parseDocument(URL catalog, URI xmlbase) throws IOException {
         try {
-        if (xmlbase == null) {
-            xmlbase = catalog.toURI();
-        }
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        Handler handler = new Handler();
-        InputStream is = null;
-        is = catalog.openStream();
-        SAXParser parser = factory.newSAXParser();
-        parser.parse(is, handler);
-        return handler.getCatalog();
+            if (xmlbase == null) {
+                xmlbase = catalog.toURI();
+            }
+            SAXParserFactory factory = SAXParserFactory.newInstance();
+            Handler handler = new Handler();
+            InputStream is = null;
+            is = catalog.openStream();
+            SAXParser parser = factory.newSAXParser();
+            parser.parse(is, handler);
+            return handler.getCatalog();
         }
         catch (IOException ioe) {
             throw ioe;
