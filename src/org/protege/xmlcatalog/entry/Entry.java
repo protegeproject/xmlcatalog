@@ -3,7 +3,7 @@ package org.protege.xmlcatalog.entry;
 import org.protege.xmlcatalog.EntryVisitor;
 import org.protege.xmlcatalog.XmlBaseContext;
 
-public abstract class Entry implements XmlBaseContext {
+public abstract class Entry {
     private String id;
     private XmlBaseContext xmlBaseContext;
 
