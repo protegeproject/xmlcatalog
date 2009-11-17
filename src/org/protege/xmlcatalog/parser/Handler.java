@@ -76,6 +76,10 @@ public class Handler extends DefaultHandler {
         
     }
     
+    public Handler(URI xmlbase) {
+        this(new OuterXmlBaseContext(xmlbase));
+    }
+    
     public Handler(XmlBaseContext context) {
         outerContext = context;
     }

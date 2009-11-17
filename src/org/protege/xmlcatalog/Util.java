@@ -8,6 +8,8 @@ import java.net.URL;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
+import org.protege.xmlcatalog.entry.Entry;
+import org.protege.xmlcatalog.impl.UriRedirectVisitor;
 import org.protege.xmlcatalog.parser.Handler;
 
 public class Util {
@@ -18,7 +20,7 @@ public class Util {
                 xmlbase = catalog.toURI();
             }
             SAXParserFactory factory = SAXParserFactory.newInstance();
-            Handler handler = new Handler();
+            Handler handler = new Handler(xmlbase);
             InputStream is = null;
             is = catalog.openStream();
             SAXParser parser = factory.newSAXParser();
@@ -34,8 +36,20 @@ public class Util {
             throw ioe;
         }
     }
+    
+    public static URI getRedirect(URI original, XMLCatalog catalog) {
+        UriRedirectVisitor visitor = new UriRedirectVisitor(original);
+        for (Entry subEntry : catalog.getEntries()) {
+            subEntry.accept(visitor);
+            if (visitor.getRedirect() != null) {
+                break;
+            }
+        }
+        return visitor.getRedirect() == null ? original : visitor.getRedirect();
+    }
+    
 
-    public static URI resolveUri(URI relative, XmlBaseContext context) {
+    public static URI resolveUriAgainstXmlBase(URI relative, XmlBaseContext context) {
         URI xmlbase = resolveXmlBase(context);
         if (xmlbase == null) {
             return relative;

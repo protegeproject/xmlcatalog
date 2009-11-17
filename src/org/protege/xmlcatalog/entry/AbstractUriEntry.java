@@ -32,6 +32,8 @@ public abstract class AbstractUriEntry extends Entry implements XmlBaseContext {
     }
     
     public URI getAbsoluteURI() {
-        return Util.resolveUri(getUri(), this);
+        return Util.resolveUriAgainstXmlBase(getUri(), this);
     }
+    
+    
 }
