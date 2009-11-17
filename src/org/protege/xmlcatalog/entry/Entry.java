@@ -10,6 +10,7 @@ public abstract class Entry {
     protected Entry(String id, XmlBaseContext xmlBaseContext) {
         super();
         this.id = id;
+        this.xmlBaseContext = xmlBaseContext;
     }
 
     public String getId() {
