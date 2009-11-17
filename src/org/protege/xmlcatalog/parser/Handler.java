@@ -90,69 +90,69 @@ public class Handler extends DefaultHandler {
             catalog = new XMLCatalog(getId(attributes), outerContext, getPrefer(attributes), getXmlBase(attributes));
         }
         else if (qName.equals(GROUP_ELEMENT)) {
-            GroupEntry group = new GroupEntry(getId(attributes), getContext(), getPrefer(attributes),  getXmlBase(attributes));
+            GroupEntry group = new GroupEntry(getId(attributes), getXmlBaseContext(), getPrefer(attributes),  getXmlBase(attributes));
             addEntry(group);
             groupStack.push(group);
         }
         else if (qName.equals(PUBLIC_ELEMENT)) {
             addEntry(new PublicEntry(getId(attributes), 
-                                     getContext(),
+                                     getXmlBaseContext(),
                                      attributes.getValue(PUBLIC_ID_ATTRIBUTE), 
                                      URI.create(attributes.getValue(URI_ATTRIBUTE)),
-                                     getXmlBase()));
+                                     getXmlBase(attributes)));
         }
         else if (qName.equals(SYSTEM_ELEMENT)) {
             addEntry(new SystemEntry(getId(attributes), 
-                                     getContext(),
+                                     getXmlBaseContext(),
                                      attributes.getValue(SYSTEM_ID_ATTRIBUTE), 
                                      URI.create(attributes.getValue(URI_ATTRIBUTE)),
-                                     getXmlBase()));
+                                     getXmlBase(attributes)));
         }
         else if (qName.equals(REWRITE_SYSTEM_ELEMENT)) {
             addEntry(new RewriteSystemEntry(getId(attributes), 
-                                            getContext(),
+                                            getXmlBaseContext(),
                                             attributes.getValue(SYSTEM_ID_START_ATTRIBUTE), 
                                             URI.create(attributes.getValue(REWRITE_PREFIX_ATTRIBUTE))));
         }
         else  if (qName.equals(DELEGATE_PUBLIC_ELEMENT)) {
             addEntry(new DelegatePublicEntry(getId(attributes),
-                                             getContext(),
+                                             getXmlBaseContext(),
                                              attributes.getValue(PUBLIC_ID_START_ATTRIBUTE),
                                              URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
-                                             getXmlBase()));
+                                             getXmlBase(attributes)));
         }
         else  if (qName.equals(DELEGATE_SYSTEM_ELEMENT)) {
             addEntry(new DelegateSystemEntry(getId(attributes),
-                                             getContext(),
+                                             getXmlBaseContext(),
                                              attributes.getValue(SYSTEM_ID_START_ATTRIBUTE),
                                              URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
-                                             getXmlBase()));
+                                             getXmlBase(attributes)));
         }
         else  if (qName.equals(URI_ELEMENT)) {
             addEntry(new UriEntry(getId(attributes),
-                                  getContext(),
+                                  getXmlBaseContext(),
                                   attributes.getValue(URI_NAME_ATTRIBUTE),
                                   URI.create(attributes.getValue(URI_ATTRIBUTE)),
-                                  getXmlBase()));
+                                  getXmlBase(attributes)));
         }
         else  if (qName.equals(REWRITE_URI_ELEMENT)) {
             addEntry(new RewriteUriEntry(getId(attributes),
-                                         getContext(),
+                                         getXmlBaseContext(),
                                          attributes.getValue(URI_START_STRING),
                                          URI.create(attributes.getValue(REWRITE_PREFIX_ATTRIBUTE))));
         }
         else  if (qName.equals(DELEGATE_URI_ELEMENT)) {
             addEntry(new DelegateUriEntry(getId(attributes),
-                                          getContext(),
+                                          getXmlBaseContext(),
                                           attributes.getValue(URI_START_STRING),
                                           URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
-                                          getXmlBase()));
+                                          getXmlBase(attributes)));
         }
         else if (qName.equals(NEXT_CATALOG_ELEMENT)) {
             addEntry(new NextCatalogEntry(getId(attributes), 
-                                          getContext(),
+                                          getXmlBaseContext(),
                                           URI.create(attributes.getValue(CATALOG_ATTRIBUTE)), 
-                                          getXmlBase()));
+                                          getXmlBase(attributes)));
         }
         else {
             throw new UnsupportedOperationException("not implemented yet");
@@ -207,28 +207,19 @@ public class Handler extends DefaultHandler {
             return null;
         }
     }
-    
-    private URI getXmlBase() {
-        if (groupStack.isEmpty()) {
-            return catalog.getXmlBase();
-        }
-        else {
-            return groupStack.peek().getXmlBase();
-        }
-    }
+
     
     private URI getXmlBase(Attributes attributes) {
         String baseString = attributes.getValue(XML_BASE_ATTRIBUTE);
         if (baseString != null) {
             return URI.create(baseString);
         }
-        else if (catalog == null) {
+        else {
             return null;
         }
-        else return getXmlBase();
     }
     
-    private XmlBaseContext getContext() {
+    private XmlBaseContext getXmlBaseContext() {
         if (groupStack.isEmpty()) {
             return catalog;
         }
