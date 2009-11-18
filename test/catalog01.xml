@@ -5,6 +5,7 @@
  		 xml:base="file:/home/tredmond/Shared/ontologies/"
          prefer="public">
 
+
 	<uri name="http://www.tigraworld.com/protege/ontology1.owl"
 		 uri="simple/ontology1.owl"/>
 </catalog>
