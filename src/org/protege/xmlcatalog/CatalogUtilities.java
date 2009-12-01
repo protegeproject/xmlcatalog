@@ -1,18 +1,24 @@
 package org.protege.xmlcatalog;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Writer;
 import java.net.URI;
 import java.net.URL;
 
+import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
+import javax.xml.transform.TransformerException;
 
 import org.protege.xmlcatalog.entry.Entry;
 import org.protege.xmlcatalog.parser.Handler;
 import org.protege.xmlcatalog.redirect.UriRedirectVisitor;
+import org.protege.xmlcatalog.write.XMLCatalogWriter;
 
-public class Util {
+public class CatalogUtilities {
     
     public static XMLCatalog parseDocument(URL catalog) throws IOException {
         return parseDocument(catalog, null);
@@ -38,6 +44,24 @@ public class Util {
             IOException ioe = new IOException(e.getMessage());
             ioe.initCause(e);
             throw ioe;
+        }
+    }
+    
+    public static void save(XMLCatalog catalog, File f) throws IOException {
+        Writer writer = new FileWriter(f);
+        XMLCatalogWriter xwriter = new XMLCatalogWriter(catalog, writer);
+        try {
+            xwriter.write();
+        }
+        catch (ParserConfigurationException pce) {
+            IOException ioe = new IOException("Error writing catalog to file " + f);
+            ioe.initCause(pce);
+            throw ioe;
+        }
+        catch (TransformerException te) {
+            IOException ioe = new IOException("Error writing catalog to file " + f);
+            ioe.initCause(te);
+            throw ioe;  
         }
     }
     
