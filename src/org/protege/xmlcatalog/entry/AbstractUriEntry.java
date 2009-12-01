@@ -2,7 +2,7 @@ package org.protege.xmlcatalog.entry;
 
 import java.net.URI;
 
-import org.protege.xmlcatalog.Util;
+import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.XmlBaseContext;
 
 public abstract class AbstractUriEntry extends Entry implements XmlBaseContext {
@@ -36,7 +36,7 @@ public abstract class AbstractUriEntry extends Entry implements XmlBaseContext {
     }
 
     public static URI resolveUriAgainstXmlBase(URI relative, XmlBaseContext context) {
-        URI xmlbase = Util.resolveXmlBase(context);
+        URI xmlbase = CatalogUtilities.resolveXmlBase(context);
         if (xmlbase == null) {
             return relative;
         }

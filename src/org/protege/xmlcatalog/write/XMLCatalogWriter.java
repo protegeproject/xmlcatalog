@@ -34,7 +34,7 @@ public class XMLCatalogWriter {
         this.out = out;
     }
     
-    public  void write() throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
+    public void write() throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
         DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document document = builder.newDocument();
@@ -63,13 +63,5 @@ public class XMLCatalogWriter {
         xformer.setOutputProperty(OutputKeys.METHOD, "xml");
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
         xformer.transform(source, result);
-    }
-  
-    public static void main(String[] args) throws IOException, ParserConfigurationException, TransformerFactoryConfigurationError, TransformerException {
-        XMLCatalog catalog = new XMLCatalog("id1", null, Prefer.PUBLIC, null);
-
-        Writer writer = new OutputStreamWriter(System.out);
-        XMLCatalogWriter xwriter = new XMLCatalogWriter(catalog, writer);
-        xwriter.write();
     }
 }

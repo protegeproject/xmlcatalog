@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URI;
 
-import org.protege.xmlcatalog.Util;
+import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.XMLCatalog;
 
@@ -30,7 +30,7 @@ public abstract class AbstractDelegateEntry extends Entry implements XmlBaseCont
     public XMLCatalog getParsedCatalog() throws IOException {
         if (delegate == null) {
             try {
-                delegate = Util.parseDocument(catalog.toURL(), Util.resolveXmlBase(this));
+                delegate = CatalogUtilities.parseDocument(catalog.toURL(), CatalogUtilities.resolveXmlBase(this));
             }
             catch (MalformedURLException mue) {
                 IOException ioe = new IOException(mue.getMessage());
