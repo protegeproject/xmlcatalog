@@ -9,10 +9,14 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.protege.xmlcatalog.entry.Entry;
-import org.protege.xmlcatalog.impl.UriRedirectVisitor;
 import org.protege.xmlcatalog.parser.Handler;
+import org.protege.xmlcatalog.redirect.UriRedirectVisitor;
 
 public class Util {
+    
+    public static XMLCatalog parseDocument(URL catalog) throws IOException {
+        return parseDocument(catalog, null);
+    }
     
     public static XMLCatalog parseDocument(URL catalog, URI xmlbase) throws IOException {
         try {
@@ -49,16 +53,6 @@ public class Util {
     }
     
 
-    public static URI resolveUriAgainstXmlBase(URI relative, XmlBaseContext context) {
-        URI xmlbase = resolveXmlBase(context);
-        if (xmlbase == null) {
-            return relative;
-        }
-        else {
-            return xmlbase.resolve(relative);
-        }
-    }
-    
     public static URI resolveXmlBase(XmlBaseContext context) {
         URI xmlbase = null;
         while (xmlbase == null && context != null) {
