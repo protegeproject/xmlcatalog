@@ -3,10 +3,12 @@ package org.protege.xmlcatalog.redirect;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.EntryVisitor;
-import org.protege.xmlcatalog.Util;
+import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.XMLCatalog;
 import org.protege.xmlcatalog.entry.DelegatePublicEntry;
 import org.protege.xmlcatalog.entry.DelegateSystemEntry;
@@ -22,23 +24,20 @@ import org.protege.xmlcatalog.entry.UriEntry;
 
 public class UriRedirectedFromVisitor implements EntryVisitor {
     private static Logger log = Logger.getLogger(UriRedirectedFromVisitor.class);
-    private URI original;
+    private Set<URI> originals = new HashSet<URI>();
     private URI redirect;
     
     public UriRedirectedFromVisitor(URI redirect) {
         this.redirect = redirect;
     }
     
-    public URI getOriginal() {
-        return original;
+    public Set<URI> getOriginals() {
+        return originals;
     }
 
     public void visit(GroupEntry entry) {
         for (Entry subEntry : entry.getEntries()) {
             subEntry.accept(this);
-            if (original != null) {
-                break;
-            }
         }
     }
 
@@ -64,60 +63,72 @@ public class UriRedirectedFromVisitor implements EntryVisitor {
 
     public void visit(UriEntry entry) {
         if (redirect.equals(entry.getAbsoluteURI())) {
-            original = URI.create(entry.getName());
+            try {
+                originals.add(new URI(entry.getName()));
+            }
+            catch (URISyntaxException uris) {
+                if (log.isDebugEnabled()) {
+                    log.debug(entry.toString() + " could not construct original URI from redirect " + redirect);
+                }
+            }
         }
     }
 
     public void visit(RewriteUriEntry entry) {
-            try {
-                URI xmlbase = Util.resolveXmlBase(entry.getXmlBaseContext());
-                if (xmlbase != null) {
-                    URI relative = xmlbase.relativize(redirect);
-                    URI test  = 
-                URI relative = original.relativize(new URI(entry.getUriStartString()));
-                if (!relative.isAbsolute()) {
-                    if (redirect.equals(Util.resolveUriAgainstXmlBase(entry.getRewritePrefix(), entry.getXmlBaseContext()).resolve(relative))) {
-                        original
+        URI xmlbase = CatalogUtilities.resolveXmlBase(entry.getXmlBaseContext());
+        if (xmlbase != null) {
+            URI relative = xmlbase.relativize(redirect);
+            if (!relative.isAbsolute()) {
+                try {
+                    originals.add(new URI(entry.getUriStartString()).resolve(relative.toString()));
+                }
+                catch (URISyntaxException urie) {
+                    if (log.isDebugEnabled()) {
+                        log.debug(entry.toString() + " could not construct original URI from redirect " + redirect);
                     }
                 }
             }
-            catch (URISyntaxException e) {
-                log.error("Exception caught trying to resolve " + original,  e);
-            }
+        }
     }
 
     public void visit(DelegateUriEntry entry) {
-        if (original.isAbsolute()) {
+        UriRedirectedFromVisitor subVisitor = new UriRedirectedFromVisitor(redirect);
+        try {
+            visitCatalog(subVisitor, entry.getParsedCatalog());
+        }
+        catch (IOException  ioe) {
+            log.error("Malformed delegate entry " + entry.getCatalog());
+            return;
+        }
+        for (URI original : subVisitor.getOriginals()) {
+            URI relative;
             try {
-                URI relative = original.relativize(new URI(entry.getUriStartString()));
-                if (!relative.isAbsolute()) {
-                    visitCatalog(entry.getParsedCatalog());
-                }
+                relative = original.relativize(new URI(entry.getUriStartString()));
             }
             catch (URISyntaxException e) {
-                log.error("Exception caught trying to resolve " + original,  e);
+                if (log.isDebugEnabled()) {
+                    log.debug(entry.toString() + " could not construct original URI from redirect " + redirect);
+                }
+                continue;
             }
-            catch (IOException ioe) {
-                log.error("Exception caught trying to resolve " + original,  ioe);
+            if (!relative.isAbsolute()) {
+                originals.add(original);
             }
         }
     }
 
     public void visit(NextCatalogEntry entry) {
         try {
-            visitCatalog(entry.getParsedCatalog());
+            visitCatalog(this, entry.getParsedCatalog());
         }
         catch (IOException ioe) {
-            log.error("Exception caught trying to resolve " + original,  ioe);
+            log.error("Next catalog entry malformed " + entry.getCatalog());
         }
     }
     
-    private void visitCatalog(XMLCatalog catalog) {
+    private void visitCatalog(EntryVisitor visitor, XMLCatalog catalog) {
         for (Entry subEntry : catalog.getEntries()) {
-            subEntry.accept(this);
-            if (redirect != null) {
-                break;
-            }
+            subEntry.accept(visitor);
         }
     }
 
