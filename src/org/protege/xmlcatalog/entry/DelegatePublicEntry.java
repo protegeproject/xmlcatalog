@@ -25,4 +25,9 @@ public class DelegatePublicEntry extends AbstractDelegateEntry {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
+    
+    @Override
+    public String toString() {
+    	return "Public " + publicIdStartString + super.toString();
+    }
 }

@@ -47,4 +47,8 @@ public abstract class AbstractDelegateEntry extends Entry implements XmlBaseCont
     public void setXmlBase(URI xmlbase) {
         this.xmlbase = xmlbase;
     }
+    
+    public String toString() {
+    	return "--> Delegate Catalog(" + delegate.getId() + ")";
+    }
 }

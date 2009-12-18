@@ -52,6 +52,8 @@ public class CatalogUtilities {
         XMLCatalogWriter xwriter = new XMLCatalogWriter(catalog, writer);
         try {
             xwriter.write();
+            writer.flush();
+            writer.close();
         }
         catch (ParserConfigurationException pce) {
             IOException ioe = new IOException("Error writing catalog to file " + f);
@@ -73,7 +75,7 @@ public class CatalogUtilities {
                 break;
             }
         }
-        return visitor.getRedirect() == null ? original : visitor.getRedirect();
+        return visitor.getRedirect() == null ? null : visitor.getRedirect();
     }
     
 

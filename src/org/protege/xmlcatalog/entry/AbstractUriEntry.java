@@ -45,5 +45,9 @@ public abstract class AbstractUriEntry extends Entry implements XmlBaseContext {
         }
     }
     
+    @Override
+    public String toString() {
+    	return "--> " + getUri();
+    }
     
 }

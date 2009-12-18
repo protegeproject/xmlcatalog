@@ -6,6 +6,7 @@ import java.util.Collections;
 import java.util.List;
 
 import org.protege.xmlcatalog.entry.Entry;
+import org.protege.xmlcatalog.parser.OuterXmlBaseContext;
 
 public class XMLCatalog implements XmlBaseContext {
     private String id;
@@ -13,6 +14,10 @@ public class XMLCatalog implements XmlBaseContext {
     private Prefer prefer;
     private URI xmlBase;
     private List<Entry> entries = new ArrayList<Entry>();
+    
+    public XMLCatalog(URI xmlBase) {
+    	this(xmlBase.toString(), new OuterXmlBaseContext(xmlBase), Prefer.PUBLIC, xmlBase);
+    }
     
     public XMLCatalog(String id, XmlBaseContext context, Prefer prefer, URI xmlBase) {
         this.id = id;

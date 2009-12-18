@@ -25,5 +25,10 @@ public class UriEntry extends AbstractUriEntry {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
+    
+    @Override
+    public String toString() {
+    	return name + super.toString();
+    }
 
 }

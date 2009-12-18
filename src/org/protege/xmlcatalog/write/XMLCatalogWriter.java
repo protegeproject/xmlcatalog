@@ -1,7 +1,6 @@
 package org.protege.xmlcatalog.write;
 
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -17,8 +16,20 @@ import javax.xml.transform.TransformerFactoryConfigurationError;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 
-import org.protege.xmlcatalog.Prefer;
+import org.protege.xmlcatalog.CatalogUtilities;
+import org.protege.xmlcatalog.EntryVisitor;
 import org.protege.xmlcatalog.XMLCatalog;
+import org.protege.xmlcatalog.entry.DelegatePublicEntry;
+import org.protege.xmlcatalog.entry.DelegateSystemEntry;
+import org.protege.xmlcatalog.entry.DelegateUriEntry;
+import org.protege.xmlcatalog.entry.Entry;
+import org.protege.xmlcatalog.entry.GroupEntry;
+import org.protege.xmlcatalog.entry.NextCatalogEntry;
+import org.protege.xmlcatalog.entry.PublicEntry;
+import org.protege.xmlcatalog.entry.RewriteSystemEntry;
+import org.protege.xmlcatalog.entry.RewriteUriEntry;
+import org.protege.xmlcatalog.entry.SystemEntry;
+import org.protege.xmlcatalog.entry.UriEntry;
 import org.protege.xmlcatalog.parser.Handler;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -48,9 +59,13 @@ public class XMLCatalogWriter {
         if (catalog.getPrefer() != null) {
             root.setAttribute(Handler.PREFER_ATTRIBUTE, catalog.getPrefer().getName());
         }
-        Element group = document.createElement(Handler.GROUP_ELEMENT);
-        root.appendChild(group);
         document.appendChild(root);
+        
+        XMLRenderingVisitor renderer = new XMLRenderingVisitor(document, root, CatalogUtilities.resolveXmlBase(catalog));
+        for (Entry entry : catalog.getEntries()) {
+            entry.accept(renderer);
+        }
+
         save(document);
     }
     
@@ -64,4 +79,5 @@ public class XMLCatalogWriter {
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
         xformer.transform(source, result);
     }
+    
 }

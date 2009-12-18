@@ -27,7 +27,6 @@
 	  <mkdir dir = "${junit.classes}"/>
 	  <mkdir dir = "${classes}"/>
 	  <mkdir dir = "${classes}/lib"/>
-	  <mkdir dir = "${genlib}"/>
 	</target> 
 	
 	<target name="compile" depends="init">

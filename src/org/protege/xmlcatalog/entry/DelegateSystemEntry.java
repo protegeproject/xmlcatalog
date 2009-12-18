@@ -25,5 +25,9 @@ public class DelegateSystemEntry extends AbstractDelegateEntry {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
-
+    
+    @Override
+    public String toString() {
+    	return "System " + systemIdStartString + super.toString();
+    }
 }

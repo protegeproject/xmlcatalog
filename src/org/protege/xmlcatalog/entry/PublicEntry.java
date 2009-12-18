@@ -25,4 +25,9 @@ public class PublicEntry extends AbstractUriEntry {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
+    
+    @Override
+    public String toString() {
+    	return "Public id " + getPublicId() + super.toString();
+    }
 }

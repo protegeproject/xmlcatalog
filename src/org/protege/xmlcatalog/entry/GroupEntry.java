@@ -52,5 +52,10 @@ public class GroupEntry extends Entry implements XmlBaseContext {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
+    
+    @Override
+    public String toString() {
+    	return "Group Entry(" + getId() + ") with " + entries.size() + " entries";
+    }
 
 }

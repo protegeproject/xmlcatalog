@@ -25,5 +25,10 @@ public class DelegateUriEntry extends AbstractDelegateEntry {
     public void accept(EntryVisitor visitor) {
         visitor.visit(this);
     }
+    
+    @Override
+    public String toString() {
+    	return "Uri " + uriStartString + super.toString();
+    }
 
 }
