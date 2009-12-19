@@ -14,6 +14,7 @@ import javax.xml.parsers.SAXParserFactory;
 import javax.xml.transform.TransformerException;
 
 import org.protege.xmlcatalog.entry.Entry;
+import org.protege.xmlcatalog.exception.CatalogParseException;
 import org.protege.xmlcatalog.parser.Handler;
 import org.protege.xmlcatalog.redirect.UriRedirectVisitor;
 import org.protege.xmlcatalog.write.XMLCatalogWriter;
@@ -24,7 +25,7 @@ public class CatalogUtilities {
         return parseDocument(catalog, null);
     }
     
-    public static XMLCatalog parseDocument(URL catalog, URI xmlbase) throws IOException {
+    public static XMLCatalog parseDocument(URL catalog, URI xmlbase) throws CatalogParseException {
         try {
             if (xmlbase == null) {
                 xmlbase = catalog.toURI();
@@ -37,13 +38,8 @@ public class CatalogUtilities {
             parser.parse(is, handler);
             return handler.getCatalog();
         }
-        catch (IOException ioe) {
-            throw ioe;
-        }
         catch (Exception e) {
-            IOException ioe = new IOException(e.getMessage());
-            ioe.initCause(e);
-            throw ioe;
+        	throw new CatalogParseException(e);
         }
     }
     
