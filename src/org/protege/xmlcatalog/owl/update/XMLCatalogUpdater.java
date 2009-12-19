@@ -2,7 +2,6 @@ package org.protege.xmlcatalog.owl.update;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
@@ -12,6 +11,16 @@ import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.XMLCatalog;
 import org.protege.xmlcatalog.entry.UriEntry;
 
+/**
+ * This class manages algorithms that try to populate an xmlcatalog for a directory.
+ * Essentially the problem is to examine the contents of the ontologies in the directory
+ * and to guess where they could have come from on the internet.  Note that any such algorithm
+ * must be a heuristic.  But several such heuristics are available including using the xmlbase
+ * or using the ontology id.
+ * 
+ * @author tredmond
+ *
+ */
 public class XMLCatalogUpdater {
     private static Logger log = Logger.getLogger(XMLCatalogUpdater.class);
     
