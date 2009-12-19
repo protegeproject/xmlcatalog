@@ -32,6 +32,7 @@
 	<target name="compile" depends="init">
 		<javac destdir="${classes}" debug="on" srcdir="${src}">
 			<classpath path="./lib/log4j.jar"/>
+			<classpath path="./lib/owlapi-bin.jar"/>
 		</javac>
 	</target>
 	
@@ -41,6 +42,7 @@
 			   srcdir="${junit}">
 			<classpath path="${classes}"/>
 			<classpath path="./lib/log4j.jar"/>
+			<classpath path="./lib/owlapi-bin.jar"/>
 			<classpath>
 				<fileset dir="./lib.test"/>
 			</classpath>
@@ -56,6 +58,7 @@
 			<classpath path="${classes}"/>
 			<classpath path="${junit.classes}"/>
 			<classpath path="./lib/log4j.jar"/>
+			<classpath path="./lib/owlapi-bin.jar"/>
 			<classpath>
 				<fileset dir="./lib.test"/>
 			</classpath>
