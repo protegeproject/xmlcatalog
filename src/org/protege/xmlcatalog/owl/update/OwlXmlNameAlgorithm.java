@@ -12,7 +12,6 @@ public class OwlXmlNameAlgorithm implements Algorithm {
         this.assumeLatest = assumeLatest;
     }
     
-    @Override
     public Set<URI> getSuggestions(File f) {
         return Collections.emptySet();
     }

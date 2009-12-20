@@ -25,7 +25,6 @@ public class RdfXmlNameAlgorithm implements Algorithm {
         ontologyProperties.add(property);
     }
 
-    @Override
     public Set<URI> getSuggestions(File f) {
         RdfExtractorConsumer consumer = new RdfExtractorConsumer();
         for (String property : ontologyProperties) {
