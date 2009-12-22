@@ -14,12 +14,18 @@ import org.xml.sax.InputSource;
 
 public class RdfXmlNameAlgorithm implements Algorithm {
     private static Logger log = Logger.getLogger(RdfXmlNameAlgorithm.class);
-    private boolean assumeLatest = false;
+    
+    private boolean assumeLatest                  = false;
+	private boolean useFirstOntologyDeclaration   = false;
     private Set<String> ontologyProperties        = new HashSet<String>();
 
     public void setAssumeLatest(boolean assumeLatest) {
         this.assumeLatest = assumeLatest;
     }
+    
+    public void setUseFirstOntologyDeclaration(boolean useFirstOntologyDeclaration) {
+		this.useFirstOntologyDeclaration = useFirstOntologyDeclaration;
+	}
     
     public void addOntologyProperty(String property) {
         ontologyProperties.add(property);
@@ -27,6 +33,7 @@ public class RdfXmlNameAlgorithm implements Algorithm {
 
     public Set<URI> getSuggestions(File f) {
         RdfExtractorConsumer consumer = new RdfExtractorConsumer();
+        consumer.setUseFirstOntologyDeclaration(useFirstOntologyDeclaration);
         for (String property : ontologyProperties) {
             consumer.addOntologyProperty(property);
         }
@@ -35,6 +42,11 @@ public class RdfXmlNameAlgorithm implements Algorithm {
             InputSource is = new InputSource(new FileInputStream(f));
             is.setSystemId(f.toURI().toString());
             parser.parse(is, consumer);
+        }
+        catch (SAXParseCompletedException spce) {
+        	if (log.isDebugEnabled()) {
+        		log.debug("parse completed early", spce);
+        	}
         }
         catch (Throwable t) {
             if (log.isDebugEnabled()) {
