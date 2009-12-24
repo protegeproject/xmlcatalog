@@ -70,9 +70,7 @@ public class XMLCatalogUpdater {
     				}
     			}
             }
-            if (changed) {
-                CatalogUtilities.save(catalog, catalogFile);
-            }
+    		CatalogUtilities.save(catalog, catalogFile);
         }
         return catalog;
 
