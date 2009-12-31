@@ -22,14 +22,8 @@ import org.protege.xmlcatalog.write.XMLCatalogWriter;
 public class CatalogUtilities {
     
     public static XMLCatalog parseDocument(URL catalog) throws IOException {
-        return parseDocument(catalog, null);
-    }
-    
-    public static XMLCatalog parseDocument(URL catalog, URI xmlbase) throws CatalogParseException {
         try {
-            if (xmlbase == null) {
-                xmlbase = catalog.toURI();
-            }
+            URI xmlbase = catalog.toURI();
             SAXParserFactory factory = SAXParserFactory.newInstance();
             Handler handler = new Handler(xmlbase);
             InputStream is = null;
