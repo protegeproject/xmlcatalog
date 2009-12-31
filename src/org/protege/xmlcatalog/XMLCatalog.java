@@ -37,6 +37,10 @@ public class XMLCatalog implements XmlBaseContext {
     public XmlBaseContext getXmlBaseContext() {
         return context;
     }
+    
+    public void setXmlBaseContext(XmlBaseContext context) {
+        this.context = context;
+    }
 
     public Prefer getPrefer() {
         return prefer;
