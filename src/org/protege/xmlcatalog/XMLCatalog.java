@@ -65,4 +65,10 @@ public class XMLCatalog implements XmlBaseContext {
     public void removeEntry(Entry e) {
         entries.remove(e);
     }
+    
+    public void replaceEntry(Entry original, Entry changed) {
+        int i = entries.indexOf(original);
+        entries.remove(original);
+        entries.add(i, changed);
+    }
 }
