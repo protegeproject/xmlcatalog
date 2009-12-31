@@ -7,7 +7,6 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.EntryVisitor;
 import org.protege.xmlcatalog.XMLCatalog;
-import org.protege.xmlcatalog.entry.AbstractUriEntry;
 import org.protege.xmlcatalog.entry.DelegatePublicEntry;
 import org.protege.xmlcatalog.entry.DelegateSystemEntry;
 import org.protege.xmlcatalog.entry.DelegateUriEntry;
@@ -69,33 +68,29 @@ public class UriRedirectVisitor implements EntryVisitor {
     }
 
     public void visit(RewriteUriEntry entry) {
-        if (original.isAbsolute()) {
-            try {
-                URI relative = original.relativize(new URI(entry.getUriStartString()));
-                if (!relative.isAbsolute()) {
-                    redirect = AbstractUriEntry.resolveUriAgainstXmlBase(entry.getRewritePrefix(), entry.getXmlBaseContext()).resolve(relative);
-                }
+        try {
+            String originalString = original.toString();
+            if (originalString.startsWith(entry.getUriStartString())) {
+                String suffix = originalString.substring(entry.getUriStartString().length());
+                redirect = URI.create(entry.getRewritePrefix().toString() + suffix);
             }
-            catch (URISyntaxException e) {
-                log.error("Exception caught trying to resolve " + original,  e);
-            }
+        }
+        catch (Throwable e) {
+            log.error("Exception caught trying to resolve " + original,  e);
         }
     }
 
     public void visit(DelegateUriEntry entry) {
-        if (original.isAbsolute()) {
-            try {
-                URI relative = original.relativize(new URI(entry.getUriStartString()));
-                if (!relative.isAbsolute()) {
+        try {
+            if (original.isAbsolute()) {
+                String originalString = original.toString();
+                if (originalString.startsWith(entry.getUriStartString())) {
                     visitCatalog(entry.getParsedCatalog());
                 }
             }
-            catch (URISyntaxException e) {
-                log.error("Exception caught trying to resolve " + original,  e);
-            }
-            catch (IOException ioe) {
-                log.error("Exception caught trying to resolve " + original,  ioe);
-            }
+        }
+        catch (IOException ioe) {
+            log.error("Exception caught trying to resolve " + original, ioe);
         }
     }
 
