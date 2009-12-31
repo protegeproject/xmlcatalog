@@ -21,7 +21,7 @@ public class ResolveTest extends TestCase {
 
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = URI.create("file:/home/tredmond/Shared/ontologies/simple/ontology1.owl");
-        checkBothAlgorithmsSame(u);
+        checkBothAlgorithmsSame(u, false);
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     
@@ -30,7 +30,7 @@ public class ResolveTest extends TestCase {
 
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = URI.create("file:/home/tredmond/Shared/simple/ontology1.owl");
-        checkBothAlgorithmsSame(u);
+        checkBothAlgorithmsSame(u, false);
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     
@@ -39,8 +39,32 @@ public class ResolveTest extends TestCase {
 
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = new File("test/simple/ontology1.owl").toURI();
-        // this doesn't work  because of a seemingly silly problem involving the URI for the outer xml base.
-        // checkBothAlgorithmsSame(u);
+        // needs trim  because of a seemingly silly problem involving the URI for the outer xml base.
+        checkBothAlgorithmsSame(u, true);
+        assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
+    }
+    
+    public void test04() throws MalformedURLException, IOException, TransformerException {
+        readCatalog("test/catalog04.xml");
+        URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
+        URI redirect = new File("test/dir1/dir2/simple/ontology1.owl").toURI();
+        checkBothAlgorithmsSame(u, true);
+        assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
+    }
+    
+    public void test05() throws MalformedURLException, IOException, TransformerException {
+        readCatalog("test/catalog05.xml");
+        URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
+        URI redirect = new File("test/dir1/dir2/simple/ontology1.owl").toURI();
+        checkBothAlgorithmsSame(u, true);
+        assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
+    }
+    
+    public void test06() throws MalformedURLException, IOException, TransformerException {
+        readCatalog("test/catalog06.xml");
+        URI u = URI.create("http://www.tigraworld.com/protege/pizza.owl");
+        URI redirect = new File("/home/tredmond/Shared/ontologies/protege/pizza.owl").toURI();
+        checkBothAlgorithmsSame(u, true);
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     
@@ -50,15 +74,34 @@ public class ResolveTest extends TestCase {
         manager.setUseStaticCatalog(false);
         manager.setCatalogFiles(catalogLocation);
         resolver = new CatalogResolver(manager);
-        catalog = CatalogUtilities.parseDocument(new File(catalogLocation).toURL(), null);
+        catalog = CatalogUtilities.parseDocument(new File(catalogLocation).toURI().toURL(), null);
     }
     
-    private void checkBothAlgorithmsSame(URI u) throws TransformerException {
+    private void checkBothAlgorithmsSame(URI u, boolean trim) throws TransformerException {
         String result1 = resolver.resolve(u.toString(), null).getSystemId();
         String result2 = CatalogUtilities.getRedirect(u, catalog).toString();
+        if (trim) {
+            result1 = trimFileScheme(result1);
+            result2 = trimFileScheme(result2);
+        }
         assertTrue(result1.equals(result2));
     }
     
-
+    /*
+     * This is a hack to avoid losing test cases because of differences like
+     *   file:/foo vs. file://foo.
+     * I am not sure why these differences come up and am not sure if the second 
+     * version makes sense.
+     */
+    private String trimFileScheme(String uri) {
+        String filePrefix="file:";
+        if (uri.startsWith(filePrefix)) {
+            uri = uri.substring(filePrefix.length());
+            while (uri.startsWith("/")) {
+                uri = uri.substring(1);
+            }
+        }
+        return uri;
+    }
     
 }
