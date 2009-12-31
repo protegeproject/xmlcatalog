@@ -11,7 +11,7 @@ public class TestCatalog extends TestCase {
 
     public void testExample1() {
         try {
-            CatalogUtilities.parseDocument(new File("test/Example1.xml").toURL(), null);
+            CatalogUtilities.parseDocument(new File("test/Example1.xml").toURI().toURL());
         }
         catch (Throwable t) {
             log.warn("Test failed", t);
@@ -21,7 +21,7 @@ public class TestCatalog extends TestCase {
     
     public void testExample2() {
         try {
-            CatalogUtilities.parseDocument(new File("test/Example2.xml").toURL(), null);
+            CatalogUtilities.parseDocument(new File("test/Example2.xml").toURI().toURL());
         }
         catch (Throwable t) {
             log.warn("Test failed", t);
