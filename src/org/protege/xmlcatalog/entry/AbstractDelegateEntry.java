@@ -32,7 +32,7 @@ public abstract class AbstractDelegateEntry extends Entry implements XmlBaseCont
             try {
                 URI base = CatalogUtilities.resolveXmlBase(this);
                 URI doc  = base.resolve(catalog);
-                delegate = CatalogUtilities.parseDocument(doc.toURL(), null);
+                delegate = CatalogUtilities.parseDocument(doc.toURL());
             }
             catch (MalformedURLException mue) {
                 IOException ioe = new IOException(mue.getMessage());
