@@ -81,6 +81,10 @@ public class CatalogUtilities {
             xmlbase = context.getXmlBase();
             context = context.getXmlBaseContext();
         }
+        if (!xmlbase.isAbsolute()) {
+            URI outerBase = resolveXmlBase(context);
+            xmlbase = outerBase.resolve(xmlbase);
+        }
         return xmlbase;
     }
 }
