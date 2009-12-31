@@ -3,6 +3,7 @@ package org.protege.xmlcatalog.parser;
 import java.net.URI;
 import java.util.Stack;
 
+import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.Prefer;
 import org.protege.xmlcatalog.XMLCatalog;
 import org.protege.xmlcatalog.XmlBaseContext;
@@ -22,6 +23,8 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class Handler extends DefaultHandler {
+    private static final Logger logger = Logger.getLogger(Handler.class);
+    
     /* *********************** Elements *********************** */
     public final static String CATALOG_ELEMENT           = "catalog";
     public final static String GROUP_ELEMENT             = "group";
@@ -155,7 +158,7 @@ public class Handler extends DefaultHandler {
                                           getXmlBase(attributes)));
         }
         else {
-            throw new UnsupportedOperationException("not implemented yet");
+            logger.error("Found unsupported element in xmlcatalog: " + qName);
         }
     }
     
