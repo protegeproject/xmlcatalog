@@ -74,7 +74,11 @@ public class ResolveTest extends TestCase {
         manager.setUseStaticCatalog(false);
         manager.setCatalogFiles(catalogLocation);
         resolver = new CatalogResolver(manager);
-        catalog = CatalogUtilities.parseDocument(new File(catalogLocation).toURI().toURL(), null);
+        catalog = parseCatalog(new File(catalogLocation));
+    }
+    
+    protected XMLCatalog parseCatalog(File location) throws MalformedURLException, IOException {
+        return CatalogUtilities.parseDocument(location.toURI().toURL());
     }
     
     private void checkBothAlgorithmsSame(URI u, boolean trim) throws TransformerException {
