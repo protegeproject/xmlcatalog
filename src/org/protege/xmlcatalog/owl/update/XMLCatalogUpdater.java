@@ -33,6 +33,7 @@ public class XMLCatalogUpdater {
     public XMLCatalog update(File catalogFile) throws IOException {
 		XMLCatalog catalog;
 		File folder = catalogFile.getParentFile();
+		Set<URI> duplicateLocations = new HashSet<URI>();
 		if (catalogFile.exists()) {
 			catalog = CatalogUtilities.parseDocument(catalogFile.toURI().toURL());
 		}
@@ -40,9 +41,7 @@ public class XMLCatalogUpdater {
 			catalog = new XMLCatalog(folder.toURI());
 		}
     	if (algorithms != null && !algorithms.isEmpty()) {
-    		boolean changed = false;
     		long catalogDate = catalogFile.lastModified();
-
 
     		for (File physicalLocation : folder.listFiles()) {
     			if (physicalLocation.exists() 
@@ -61,10 +60,11 @@ public class XMLCatalogUpdater {
     							                          shortLocation,
     							                          null);
     							catalog.addEntry(u);
-    							changed = true;
     						}
-    						else {
-    							log.info("Location with duplicate redirects found " + webLocation);
+    						else if (!duplicateLocations.contains(webLocation)) {
+    						    duplicateLocations.add(webLocation);
+    						    log.info("Multiple physical locations mapping to the import declaration " + webLocation);
+    						    log.info("\tUsing " + CatalogUtilities.getRedirect(webLocation, catalog));
     						}
     					}
     				}
