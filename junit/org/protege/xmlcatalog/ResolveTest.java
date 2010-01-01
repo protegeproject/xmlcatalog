@@ -48,7 +48,11 @@ public class ResolveTest extends TestCase {
         readCatalog("test/catalog04.xml");
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = new File("test/dir1/dir2/simple/ontology1.owl").toURI();
-        checkBothAlgorithmsSame(u, true);
+        // The apache resolver behaves differently in Java 1.5 and Java 1.6
+        // I have aligned this library with the 1.6 behavior
+        if (!JunitUtilities.isJava5()) {
+            checkBothAlgorithmsSame(u, true);
+        }
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     
@@ -56,7 +60,11 @@ public class ResolveTest extends TestCase {
         readCatalog("test/catalog05.xml");
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = new File("test/dir1/dir2/simple/ontology1.owl").toURI();
-        checkBothAlgorithmsSame(u, true);
+        // The apache resolver behaves differently in Java 1.5 and Java 1.6
+        // I have aligned this library with the 1.6 behavior
+        if (!JunitUtilities.isJava5()) {
+            checkBothAlgorithmsSame(u, true);
+        }
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     

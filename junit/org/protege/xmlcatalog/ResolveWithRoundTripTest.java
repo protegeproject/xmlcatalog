@@ -6,7 +6,7 @@ import java.net.MalformedURLException;
 
 import org.protege.xmlcatalog.parser.OuterXmlBaseContext;
 
-public class ResolveTestWithRoundTrip extends ResolveTest {
+public class ResolveWithRoundTripTest extends ResolveTest {
 
     @Override
     protected XMLCatalog parseCatalog(File location) throws MalformedURLException, IOException {

@@ -6,8 +6,8 @@ import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 
-public class TestCatalog extends TestCase {
-    private static final Logger log = Logger.getLogger(TestCatalog.class);
+public class CatalogTest extends TestCase {
+    private static final Logger log = Logger.getLogger(CatalogTest.class);
 
     public void testExample1() {
         try {

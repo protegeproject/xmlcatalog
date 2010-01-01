@@ -7,8 +7,8 @@ import junit.framework.TestCase;
 
 import org.apache.log4j.Logger;
 
-public class RdfXmlNameTestCase extends TestCase {
-    private static final Logger logger = Logger.getLogger(RdfXmlNameTestCase.class);
+public class RdfXmlNameTest extends TestCase {
+    private static final Logger logger = Logger.getLogger(RdfXmlNameTest.class);
 
     public void testSimple() {
         File pizza = new File("test/pizza.owl");

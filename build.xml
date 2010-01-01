@@ -63,7 +63,7 @@
 				<fileset dir="./lib.test"/>
 			</classpath>
 			<batchtest>
-				<fileset dir="${junit}"/>
+				<fileset dir="${junit}" includes="**/*Test.java"/>
 			</batchtest>
 	    </junit>
 	</target>
