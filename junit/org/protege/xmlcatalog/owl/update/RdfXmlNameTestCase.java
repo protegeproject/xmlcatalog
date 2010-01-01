@@ -5,7 +5,10 @@ import java.net.URI;
 
 import junit.framework.TestCase;
 
+import org.apache.log4j.Logger;
+
 public class RdfXmlNameTestCase extends TestCase {
+    private static final Logger logger = Logger.getLogger(RdfXmlNameTestCase.class);
 
     public void testSimple() {
         File pizza = new File("test/pizza.owl");
@@ -15,10 +18,15 @@ public class RdfXmlNameTestCase extends TestCase {
     }
     
     public void testAmbiguous() {
-        File ambiguous = new File("test/Ambiguous.owl");
-        RdfXmlNameAlgorithm algorithm = new RdfXmlNameAlgorithm();
-        assertTrue(algorithm.getSuggestions(ambiguous).size()==1);
-        assertTrue(algorithm.getSuggestions(ambiguous).contains(URI.create("http://www.test.com/right.owl")));
+        try {
+            File ambiguous = new File("test/Ambiguous.owl");
+            RdfXmlNameAlgorithm algorithm = new RdfXmlNameAlgorithm();
+            assertTrue(algorithm.getSuggestions(ambiguous).size()==1);
+            assertTrue(algorithm.getSuggestions(ambiguous).contains(URI.create("http://www.test.com/right.owl")));
+        }
+        catch (Throwable t) {
+            logger.error("Exception caught", t);
+        }
     }
     
     public void testVersioned() {
