@@ -12,7 +12,6 @@ import org.semanticweb.owlapi.vocab.OWLRDFVocabulary;
 import org.xml.sax.SAXException;
 
 public class RdfExtractorConsumer implements RDFConsumer {
-	private boolean useFirstOntologyDeclaration   = false;
     private Set<String> ontologyProperties        = new HashSet<String>();
     
     private String      xmlBase;
@@ -23,10 +22,6 @@ public class RdfExtractorConsumer implements RDFConsumer {
     public RdfExtractorConsumer() {
         ontologyProperties.add(OWLRDFVocabulary.OWL_IMPORTS.getIRI().toString());
     }
-    
-    public void setUseFirstOntologyDeclaration(boolean useFirstOntologyDeclaration) {
-		this.useFirstOntologyDeclaration = useFirstOntologyDeclaration;
-	}
     
     public void addOntologyProperty(String property) {
         ontologyProperties.add(property);
@@ -63,9 +58,6 @@ public class RdfExtractorConsumer implements RDFConsumer {
         else if (predicate.equals(OWLRDFVocabulary.RDF_TYPE.toString()) &&
                  object.equals("http://www.w3.org/2002/07/owl#OntologyProperty")) {
             ontologyProperties.add(subject);
-            if (useFirstOntologyDeclaration && subject.equals(xmlBase)) {
-            	throw new SAXParseCompletedException();
-            }
         }
         else if (predicate.equals(OWLRDFVocabulary.RDF_TYPE.toString()) &&
                    object.equals(OWLRDFVocabulary.OWL_ONTOLOGY.toString()) &&
