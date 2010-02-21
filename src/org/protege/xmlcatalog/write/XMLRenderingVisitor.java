@@ -24,14 +24,12 @@ import org.w3c.dom.Element;
 public class XMLRenderingVisitor implements EntryVisitor {
     private Document document;
     private Element parent;
-    private URI xmlbase;
     
     
     
     public XMLRenderingVisitor(Document document, Element parent, URI xmlbase) {
         this.document = document;
         this.parent = parent;
-        this.xmlbase = xmlbase;
     }
 
     public void visit(GroupEntry entry) {

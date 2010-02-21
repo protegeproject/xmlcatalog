@@ -2,7 +2,6 @@ package org.protege.xmlcatalog.redirect;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URISyntaxException;
 
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.EntryVisitor;

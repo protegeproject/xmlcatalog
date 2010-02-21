@@ -3,7 +3,9 @@ package org.protege.xmlcatalog.exception;
 import java.io.IOException;
 
 public class CatalogParseException extends IOException {
-	public CatalogParseException() {
+    private static final long serialVersionUID = -2087487036403016848L;
+
+    public CatalogParseException() {
 		
 	}
 	
