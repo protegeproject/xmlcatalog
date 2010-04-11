@@ -1,15 +1,17 @@
 package org.protege.xmlcatalog.owl.update;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.Prefer;
 import org.protege.xmlcatalog.XMLCatalog;
+import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.entry.Entry;
 import org.protege.xmlcatalog.entry.GroupEntry;
 import org.protege.xmlcatalog.entry.UriEntry;
@@ -38,64 +40,62 @@ public class XMLCatalogUpdater {
         this.groupName = groupName;
     }
 
-    public XMLCatalog update(File catalogFile) throws IOException {
-		XMLCatalog catalog;
-		File folder = catalogFile.getParentFile();
-		Set<URI> locationsAdded = new HashSet<URI>();
-		Set<URI> alreadyWarnedOfDuplicate = new HashSet<URI>();
-		if (catalogFile.exists()) {
-			catalog = CatalogUtilities.parseDocument(catalogFile.toURI().toURL());
-		}
-		else {
-			catalog = new XMLCatalog(folder.toURI());
-		}
-		GroupEntry ge = findGroupEntry(catalog, catalogFile);
-        long catalogDate = catalogFile.lastModified();
-		removeStaleEntries(ge, catalogDate);
-    	if (algorithms != null && !algorithms.isEmpty()) {
-
-    		for (File physicalLocation : folder.listFiles()) {
-    			if (physicalLocation.exists() 
-    					&& physicalLocation.isFile() 
-    					&& physicalLocation.getPath().endsWith(".owl")
-    					&& !physicalLocation.getName().startsWith(".")
-    					&& (!catalogFile.exists() || physicalLocation.lastModified() >= catalogDate)) {
-    				for (Algorithm algorithm : algorithms) {
-    					Set<URI> webLocations = algorithm.getSuggestions(physicalLocation);
-    					for (URI webLocation : webLocations) {
-    					    if (locationsAdded.contains(webLocation) && !alreadyWarnedOfDuplicate.contains(webLocation)) {
-                                log.info("Multiple physical locations mapping to the import declaration " + webLocation);
-                                log.info("Some possibilies may be skipped");
-                                alreadyWarnedOfDuplicate.add(webLocation);
-                                break;
-    					    }
-    					    locationsAdded.add(webLocation);
-    					    for (Entry e : ge.getEntries()) {
-    					        if (e instanceof UriEntry) {
-    					            UriEntry ue = (UriEntry) e;
-    					            if (ue.getName().equals(webLocation.toString())) {
-    					                ge.removeEntry(ue);
-    					            }
-    					        }
-    					    }
-    					    URI shortLocation = folder.toURI().relativize(physicalLocation.toURI());
-    					    UriEntry u = new UriEntry(null, 
-    					                              catalog, 
-    					                              webLocation.toString(),
-    					                              shortLocation,
-    					                              null);
-    					    catalog.addEntry(u);
+    public boolean update(File folder, GroupEntry ge, long catalogDate) {
+		boolean modified  = removeStaleEntries(ge, catalogDate);
+    	if (algorithms == null || !algorithms.isEmpty()) {
+    		return modified;
+    	}
+    	Map<URI, Set<File>> importToDiskLocationMap = new HashMap<URI, Set<File>>();
+    	for (File physicalLocation : folder.listFiles()) {
+    		if (physicalLocation.exists() 
+    				&& physicalLocation.isFile() 
+    				&& physicalLocation.getPath().endsWith(".owl")
+    				&& !physicalLocation.getName().startsWith(".")
+    				&& (physicalLocation.lastModified() >= catalogDate)) {
+    			for (Algorithm algorithm : algorithms) {
+    				Set<URI> webLocations = algorithm.getSuggestions(physicalLocation);
+    				for (URI webLocation : webLocations) {
+    					Set<File> diskLocations = importToDiskLocationMap.get(webLocation);
+    					if (diskLocations == null) {
+    						diskLocations = new HashSet<File>();
+    						importToDiskLocationMap.put(webLocation, diskLocations);
     					}
+    					diskLocations.add(physicalLocation);
     				}
     			}
-            }
-    		CatalogUtilities.save(catalog, catalogFile);
-        }
-        return catalog;
-
+    		}
+    	}
+    	for (java.util.Map.Entry<URI, Set<File>> entry : importToDiskLocationMap.entrySet()) {
+    		URI webLocation = entry.getKey();
+    		Set<File> diskLocations = entry.getValue();
+    		if (diskLocations == null || diskLocations.isEmpty()) {
+    			continue;
+    		}
+    		for (Entry e : ge.getEntries()) {
+    			if (e instanceof UriEntry) {
+    				UriEntry ue = (UriEntry) e;
+    				if (ue.getName().equals(webLocation.toString())) {
+    					ge.removeEntry(ue);
+    					modified = true;
+    				}
+    			}
+    		}
+    		boolean duplicatesFound = (diskLocations.size() != 1);
+    		for (File physicalLocation : diskLocations) {
+    			URI shortLocation = folder.toURI().relativize(physicalLocation.toURI());
+    			UriEntry u = new UriEntry(null, 
+    					                  ge, 
+    					                  (duplicatesFound ? "duplicate:" : "") + webLocation.toString(),
+    					                  shortLocation,
+    					                  null);
+    			modified = true;
+    		}
+    	}
+    	return modified;
     }
     
-    private void removeStaleEntries(GroupEntry ge, long catalogDate) {
+    private boolean removeStaleEntries(GroupEntry ge, long catalogDate) {
+    	boolean removed = false;
         for (Entry e : ge.getEntries()) {
             if (e instanceof UriEntry) {
                 UriEntry ue = (UriEntry) e;
@@ -103,6 +103,7 @@ public class XMLCatalogUpdater {
                     File f = new File(ue.getAbsoluteURI());
                     if (!f.exists() || f.lastModified() > catalogDate) {
                         ge.removeEntry(ue);
+                        removed = true;
                     }
                 }
                 catch (Throwable t) {
@@ -110,6 +111,7 @@ public class XMLCatalogUpdater {
                 }
             }
         }
+        return removed;
     }
     
     private GroupEntry findGroupEntry(XMLCatalog catalog, File catalogFile) {
