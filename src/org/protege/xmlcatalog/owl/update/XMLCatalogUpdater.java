@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.CatalogUtilities;
+import org.protege.xmlcatalog.Prefer;
 import org.protege.xmlcatalog.XMLCatalog;
 import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.entry.Entry;
@@ -31,9 +32,14 @@ public class XMLCatalogUpdater {
     public static final String DUPLICATE_SCHEME = "duplicate:";
     
     private Set<Algorithm> algorithms;
+    private String groupName;
     
     public void setAlgorithms(Set<Algorithm> algorithms) {
         this.algorithms = new HashSet<Algorithm>(algorithms);
+    }
+    
+    public void setGroupName(String groupName) {
+        this.groupName = groupName;
     }
 
     public boolean update(File folder, GroupEntry ge, long catalogDate) {

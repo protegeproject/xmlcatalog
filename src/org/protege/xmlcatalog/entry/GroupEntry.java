@@ -2,7 +2,6 @@ package org.protege.xmlcatalog.entry;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.protege.xmlcatalog.EntryVisitor;
@@ -37,11 +36,15 @@ public class GroupEntry extends Entry implements XmlBaseContext {
     }
 
     public List<Entry> getEntries() {
-        return Collections.unmodifiableList(entries);
+        return new ArrayList<Entry>(entries);
     }
 
     public void addEntry(Entry e) {
         entries.add(e);
+    }
+    
+    public void addEntry(int index, Entry e) {
+        entries.add(index, e);
     }
     
     public void removeEntry(Entry e) {
