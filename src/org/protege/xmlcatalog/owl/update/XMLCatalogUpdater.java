@@ -1,14 +1,18 @@
 package org.protege.xmlcatalog.owl.update;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.XMLCatalog;
+import org.protege.xmlcatalog.XmlBaseContext;
+import org.protege.xmlcatalog.entry.Entry;
+import org.protege.xmlcatalog.entry.GroupEntry;
 import org.protege.xmlcatalog.entry.UriEntry;
 
 /**
@@ -24,56 +28,100 @@ import org.protege.xmlcatalog.entry.UriEntry;
 public class XMLCatalogUpdater {
     private static Logger log = Logger.getLogger(XMLCatalogUpdater.class);
     
+    public static final String DUPLICATE_SCHEME = "duplicate:";
+    
     private Set<Algorithm> algorithms;
     
     public void setAlgorithms(Set<Algorithm> algorithms) {
         this.algorithms = new HashSet<Algorithm>(algorithms);
     }
 
-    public XMLCatalog update(File catalogFile) throws IOException {
-		XMLCatalog catalog;
-		File folder = catalogFile.getParentFile();
-		Set<URI> duplicateLocations = new HashSet<URI>();
-		if (catalogFile.exists()) {
-			catalog = CatalogUtilities.parseDocument(catalogFile.toURI().toURL());
-		}
-		else {
-			catalog = new XMLCatalog(folder.toURI());
-		}
-    	if (algorithms != null && !algorithms.isEmpty()) {
-    		long catalogDate = catalogFile.lastModified();
-
-    		for (File physicalLocation : folder.listFiles()) {
-    			if (physicalLocation.exists() 
-    					&& physicalLocation.isFile() 
-    					&& physicalLocation.getPath().endsWith(".owl")
-    					&& !physicalLocation.getName().startsWith(".")
-    					&& (!catalogFile.exists() || physicalLocation.lastModified() >= catalogDate)) {
-    				for (Algorithm algorithm : algorithms) {
-    					Set<URI> webLocations = algorithm.getSuggestions(physicalLocation);
-    					for (URI webLocation : webLocations) {
-    						if (CatalogUtilities.getRedirect(webLocation, catalog) == null) {
-    						    URI shortLocation = folder.toURI().relativize(physicalLocation.toURI());
-    							UriEntry u = new UriEntry(null, 
-    							                          catalog, 
-    							                          webLocation.toString(),
-    							                          shortLocation,
-    							                          null);
-    							catalog.addEntry(u);
-    						}
-    						else if (!duplicateLocations.contains(webLocation)) {
-    						    duplicateLocations.add(webLocation);
-    						    log.info("Multiple physical locations mapping to the import declaration " + webLocation);
-    						    log.info("\tUsing " + CatalogUtilities.getRedirect(webLocation, catalog));
-    						}
+    public boolean update(File folder, GroupEntry ge, long catalogDate) {
+		boolean modified  = removeStaleEntries(ge, catalogDate);
+    	if (algorithms == null || algorithms.isEmpty()) {
+    		return modified;
+    	}
+    	Map<URI, Set<File>> importToDiskLocationMap = new HashMap<URI, Set<File>>();
+    	for (File physicalLocation : folder.listFiles()) {
+    		if (physicalLocation.exists() 
+    				&& physicalLocation.isFile() 
+    				&& physicalLocation.getPath().endsWith(".owl")
+    				&& !physicalLocation.getName().startsWith(".")
+    				&& (physicalLocation.lastModified() >= catalogDate)) {
+    			for (Algorithm algorithm : algorithms) {
+    				Set<URI> webLocations = algorithm.getSuggestions(physicalLocation);
+    				for (URI webLocation : webLocations) {
+    					Set<File> diskLocations = importToDiskLocationMap.get(webLocation);
+    					if (diskLocations == null) {
+    						diskLocations = new HashSet<File>();
+    						importToDiskLocationMap.put(webLocation, diskLocations);
     					}
+    					diskLocations.add(physicalLocation);
     				}
     			}
+    		}
+    	}
+    	for (java.util.Map.Entry<URI, Set<File>> entry : importToDiskLocationMap.entrySet()) {
+    		URI webLocation = entry.getKey();
+    		Set<File> diskLocations = entry.getValue();
+    		if (diskLocations == null || diskLocations.isEmpty()) {
+    			continue;
+    		}
+    		for (Entry e : ge.getEntries()) {
+    			if (e instanceof UriEntry) {
+    				UriEntry ue = (UriEntry) e;
+    				if (ue.getName().equals(webLocation.toString())) {
+    					ge.removeEntry(ue);
+    					modified = true;
+    				}
+    			}
+    		}
+    		boolean duplicatesFound = (diskLocations.size() != 1);
+    		for (File physicalLocation : diskLocations) {
+    			URI shortLocation = folder.toURI().relativize(physicalLocation.toURI());
+    			UriEntry u = new UriEntry(null, 
+    					                  ge, 
+    					                  (duplicatesFound ? DUPLICATE_SCHEME : "") + webLocation.toString(),
+    					                  shortLocation,
+    					                  null);
+    			ge.addEntry(u);
+    			modified = true;
+    		}
+    	}
+    	return modified;
+    }
+    
+    private boolean removeStaleEntries(GroupEntry ge, long catalogDate) {
+    	boolean removed = false;
+        for (Entry e : ge.getEntries()) {
+            if (e instanceof UriEntry) {
+                UriEntry ue = (UriEntry) e;
+                try {
+                    File f = new File(ue.getAbsoluteURI());
+                    if (!f.exists() || f.lastModified() > catalogDate) {
+                        ge.removeEntry(ue);
+                        removed = true;
+                    }
+                }
+                catch (Throwable t) {
+                    ;
+                }
             }
-    		CatalogUtilities.save(catalog, catalogFile);
         }
-        return catalog;
-
+        return removed;
+    }
+    
+    private GroupEntry findGroupEntry(XMLCatalog catalog, File catalogFile) {
+        for (Entry e : catalog.getEntries()) {
+            if (e instanceof GroupEntry && e.getId() != null && e.getId().startsWith(groupName)) {
+                return (GroupEntry) e;
+            }
+        }
+        File directory = catalogFile.getParentFile();
+        URI xmlBase = directory != null ? directory.toURI() : null;
+        GroupEntry ge = new GroupEntry(groupName, catalog, Prefer.PUBLIC, xmlBase);
+        catalog.addEntry(ge);
+        return ge;
     }
     
 }

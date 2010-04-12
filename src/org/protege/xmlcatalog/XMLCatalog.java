@@ -16,7 +16,7 @@ public class XMLCatalog implements XmlBaseContext {
     private List<Entry> entries = new ArrayList<Entry>();
     
     public XMLCatalog(URI xmlBase) {
-    	this(xmlBase.toString(), new OuterXmlBaseContext(xmlBase), Prefer.PUBLIC, xmlBase);
+    	this(null, new OuterXmlBaseContext(xmlBase), Prefer.PUBLIC, null);
     }
     
     public XMLCatalog(String id, XmlBaseContext context, Prefer prefer, URI xmlBase) {
