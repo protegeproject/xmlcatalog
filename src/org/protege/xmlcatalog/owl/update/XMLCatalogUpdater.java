@@ -29,6 +29,8 @@ import org.protege.xmlcatalog.entry.UriEntry;
 public class XMLCatalogUpdater {
     private static Logger log = Logger.getLogger(XMLCatalogUpdater.class);
     
+    public static final String DUPLICATE_SCHEME = "duplicate:";
+    
     private Set<Algorithm> algorithms;
     private String groupName;
     
@@ -42,7 +44,7 @@ public class XMLCatalogUpdater {
 
     public boolean update(File folder, GroupEntry ge, long catalogDate) {
 		boolean modified  = removeStaleEntries(ge, catalogDate);
-    	if (algorithms == null || !algorithms.isEmpty()) {
+    	if (algorithms == null || algorithms.isEmpty()) {
     		return modified;
     	}
     	Map<URI, Set<File>> importToDiskLocationMap = new HashMap<URI, Set<File>>();
@@ -85,9 +87,10 @@ public class XMLCatalogUpdater {
     			URI shortLocation = folder.toURI().relativize(physicalLocation.toURI());
     			UriEntry u = new UriEntry(null, 
     					                  ge, 
-    					                  (duplicatesFound ? "duplicate:" : "") + webLocation.toString(),
+    					                  (duplicatesFound ? DUPLICATE_SCHEME : "") + webLocation.toString(),
     					                  shortLocation,
     					                  null);
+    			ge.addEntry(u);
     			modified = true;
     		}
     	}

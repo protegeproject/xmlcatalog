@@ -2,6 +2,7 @@ package org.protege.xmlcatalog.write;
 
 import java.net.URI;
 
+import org.protege.xmlcatalog.CatalogUtilities;
 import org.protege.xmlcatalog.EntryVisitor;
 import org.protege.xmlcatalog.XmlBaseContext;
 import org.protege.xmlcatalog.entry.AbstractDelegateEntry;
@@ -42,6 +43,10 @@ public class XMLRenderingVisitor implements EntryVisitor {
             groupElement.setAttribute(Handler.PREFER_ATTRIBUTE, entry.getPrefer().getName());
         }
         parent.appendChild(groupElement);
+        XMLRenderingVisitor subEntryVisitor = new XMLRenderingVisitor(document, groupElement, CatalogUtilities.resolveXmlBase(entry));
+        for (Entry subEntry : entry.getEntries()) {
+        	subEntry.accept(subEntryVisitor);
+        }
     }
 
     public void visit(PublicEntry entry) {
@@ -154,8 +159,13 @@ public class XMLRenderingVisitor implements EntryVisitor {
     }
 
     private void addXmlBase(Element element, XmlBaseContext entry) {
-        if (entry.getXmlBase() != null) {
-            element.setAttribute(Handler.XML_BASE_ATTRIBUTE, entry.getXmlBase().toString());
+    	URI xmlbase = entry.getXmlBase();
+        if (xmlbase != null) {
+        	URI parentBase;
+        	if ((entry.getXmlBaseContext() != null) && ((parentBase = CatalogUtilities.resolveXmlBase(entry.getXmlBaseContext())) != null)) {
+        		xmlbase = parentBase.relativize(xmlbase);
+        	}
+            element.setAttribute(Handler.XML_BASE_ATTRIBUTE, xmlbase.toString());
         }
     }
     
