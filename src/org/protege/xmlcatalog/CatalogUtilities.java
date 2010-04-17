@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.Writer;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 
 import javax.xml.parsers.ParserConfigurationException;
@@ -80,5 +81,25 @@ public class CatalogUtilities {
             xmlbase = outerBase.resolve(xmlbase);
         }
         return xmlbase;
+    }
+    
+    public static URI relativize(URI u, XmlBaseContext context) {
+        URI xmlbase = resolveXmlBase(context);
+        if (xmlbase == null) {
+            return u;
+        }
+        String path = xmlbase.getPath();
+        int index;
+        if (path != null && (index = path.lastIndexOf("/")) != -1) {
+            path = path.substring(0, index + 1);
+            try {
+                xmlbase = new URI(xmlbase.getScheme(), xmlbase.getUserInfo(), xmlbase.getHost(), xmlbase.getPort(),
+                                  path, null, null);
+            }
+            catch (URISyntaxException e) {
+                ;
+            }
+        }
+        return xmlbase.relativize(u);
     }
 }
