@@ -13,7 +13,6 @@ import org.protege.xmlcatalog.entry.Entry;
 import org.protege.xmlcatalog.entry.GroupEntry;
 import org.protege.xmlcatalog.entry.NextCatalogEntry;
 
-import com.sun.org.apache.xml.internal.resolver.CatalogEntry;
 
 public class EntryTreeNode implements TreeNode {
 	public static final Logger LOGGER = Logger.getLogger(EntryTreeNode.class);
