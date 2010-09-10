@@ -76,6 +76,15 @@ public class ResolveTest extends TestCase {
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     
+    public void test07() throws TransformerException, MalformedURLException, IOException {
+        readCatalog("test/catalog07.xml");
+
+        URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
+        URI redirect = URI.create("file:/home/tredmond/Shared/ontologies/simple/ontology1.owl");
+        checkBothAlgorithmsSame(u, false);
+        assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
+    }
+    
     private void readCatalog(String catalogLocation) throws MalformedURLException, IOException {
         System.setProperty("xml.catalog.ignoreMissing", "true");
         CatalogManager manager = new CatalogManager();
