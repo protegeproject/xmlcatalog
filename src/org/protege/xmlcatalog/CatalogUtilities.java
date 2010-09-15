@@ -21,6 +21,7 @@ import org.protege.xmlcatalog.exception.CatalogParseException;
 import org.protege.xmlcatalog.parser.Handler;
 import org.protege.xmlcatalog.redirect.UriRedirectVisitor;
 import org.protege.xmlcatalog.write.XMLCatalogWriter;
+import org.xml.sax.InputSource;
 
 public class CatalogUtilities {
     
@@ -29,8 +30,8 @@ public class CatalogUtilities {
             URI xmlbase = catalog.toURI();
             SAXParserFactory factory = SAXParserFactory.newInstance();
             Handler handler = new Handler(xmlbase);
-            InputStream is = null;
-            is = catalog.openStream();
+            InputSource is = new InputSource(catalog.openStream());
+            is.setEncoding("UTF-8");  // is this necessary?
             SAXParser parser = factory.newSAXParser();
             parser.parse(is, handler);
             return handler.getCatalog();
