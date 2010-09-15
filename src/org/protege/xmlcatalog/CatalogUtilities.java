@@ -1,9 +1,11 @@
 package org.protege.xmlcatalog;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -39,7 +41,7 @@ public class CatalogUtilities {
     }
     
     public static void save(XMLCatalog catalog, File f) throws IOException {
-        Writer writer = new FileWriter(f);
+        OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(f), "UTF-8");
         XMLCatalogWriter xwriter = new XMLCatalogWriter(catalog, writer);
         try {
             xwriter.write();
