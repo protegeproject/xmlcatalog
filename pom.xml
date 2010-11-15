@@ -30,9 +30,9 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>edu.stanford.bmir.core</groupId>
+			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.0</version>
+			<version>1.2.16</version>
 		</dependency>
 
 		<dependency>
@@ -55,7 +55,7 @@
 	</organization>
 
 	<build>
-		<outputDirectory>test-output-directory</outputDirectory>
+		<outputDirectory>target/test-output-directory</outputDirectory>
 
 		<plugins>
 
