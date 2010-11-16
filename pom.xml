@@ -55,8 +55,6 @@
 	</organization>
 
 	<build>
-		<outputDirectory>target/test-output-directory</outputDirectory>
-
 		<plugins>
 
 			<!-- Create jar file -->
