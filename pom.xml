@@ -17,7 +17,7 @@
 	<distributionManagement>
 		<repository>
 			<id>releases</id>
-			<url>${nexus.path}/thirdparty</url>
+			<url>${nexus.path}/bmir-release</url>
 		</repository>
 
 		<snapshotRepository>
