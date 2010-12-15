@@ -39,9 +39,6 @@ public class XMLCatalogWriter {
         DocumentBuilder builder = dbf.newDocumentBuilder();
         Document document = builder.newDocument();
         Element root = document.createElementNS(XML_CATALOG_NS, Handler.CATALOG_ELEMENT);
-        if (catalog.getId() != null) {
-            root.setAttribute(Handler.ID_ATTRIBUTE, catalog.getId());
-        }
         if (catalog.getXmlBase() != null) {
             root.setAttribute(Handler.XML_BASE_ATTRIBUTE, catalog.getXmlBase().toString());
         }

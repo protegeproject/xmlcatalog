@@ -44,7 +44,7 @@ public class CellRenderer implements TreeCellRenderer {
 												  boolean hasFocus) {
 		initColors(tree);
 		if (value instanceof CatalogTreeNode) {
-			label.setText(((CatalogTreeNode) value).getCatalog().getId());
+			label.setText("" + ((CatalogTreeNode) value).getCatalog().getXmlBase());
 		}
 		else {
 			EntryTreeNode node = (EntryTreeNode) value;

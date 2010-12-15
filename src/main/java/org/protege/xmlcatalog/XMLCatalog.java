@@ -8,7 +8,6 @@ import org.protege.xmlcatalog.entry.Entry;
 import org.protege.xmlcatalog.parser.OuterXmlBaseContext;
 
 public class XMLCatalog implements XmlBaseContext {
-    private String id;
     private XmlBaseContext context;
     private Prefer prefer;
     private URI xmlBase;
@@ -19,18 +18,9 @@ public class XMLCatalog implements XmlBaseContext {
     }
     
     public XMLCatalog(String id, XmlBaseContext context, Prefer prefer, URI xmlBase) {
-        this.id = id;
         this.context = context;
         this.prefer = prefer;
         this.xmlBase = xmlBase;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
     
     public XmlBaseContext getXmlBaseContext() {

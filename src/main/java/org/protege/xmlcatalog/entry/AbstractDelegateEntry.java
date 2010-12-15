@@ -51,6 +51,6 @@ public abstract class AbstractDelegateEntry extends Entry implements XmlBaseCont
     }
     
     public String toString() {
-    	return "--> Delegate Catalog(" + delegate.getId() + ")";
+    	return "--> Delegate Catalog(@" + delegate.getXmlBase() + ")";
     }
 }
