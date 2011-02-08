@@ -59,16 +59,13 @@ public class XMLCatalogWriter {
         Source source = new DOMSource(document);
         Result result = new StreamResult(out);
         TransformerFactory factory = TransformerFactory.newInstance();
-        /*
-         * It is not clear how to set up the indent level in the output generated this 
-         * way.  (These Transformers seem to be a lousy way of writing xml).  On google
-         * it is suggested that you can use the "indent-number" attribute of the TransformerFactory
-         * and for a long time this seemed to work.  But GForge ticket 2734 indicates that this 
-         * setting can fail in a pretty brutal way.  See svn revision 20613 for the 
-         * previous implementation.  Google also suggests an alternative slightly different 
-         * variation for setting the indentation level but since I can't replicate GForge 2734 I
-         * am suspicious as to whether this would work.
-         */
+        /* Hopefully this guards against residual effects from GForge ticket 2734 */
+        try {
+            factory.setAttribute("indent-number", 4);
+        }
+        catch (IllegalArgumentException e) {
+        	// ok - be that way.
+        }
         Transformer xformer = factory.newTransformer();
         xformer.setOutputProperty(OutputKeys.METHOD, "xml");
         xformer.setOutputProperty(OutputKeys.INDENT, "yes");
