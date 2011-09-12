@@ -1,0 +1,31 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Protege4 XML Catalog Library
+Bundle-SymbolicName: org.protege.xmlcatalog
+Bundle-Version: 1.0.2
+Import-Package: javax.swing,
+ javax.swing.tree,
+ javax.xml.parsers,
+ javax.xml.transform,
+ javax.xml.transform.dom,
+ javax.xml.transform.stream,
+ org.apache.log4j,
+ org.protege.xmlcatalog,
+ org.protege.xmlcatalog.entry,
+ org.protege.xmlcatalog.exception,
+ org.protege.xmlcatalog.parser,
+ org.protege.xmlcatalog.redirect,
+ org.protege.xmlcatalog.swing,
+ org.protege.xmlcatalog.write,
+ org.w3c.dom,
+ org.xml.sax,
+ org.xml.sax.helpers
+Export-Package: org.protege.xmlcatalog,
+ org.protege.xmlcatalog.entry,
+ org.protege.xmlcatalog.exception,
+ org.protege.xmlcatalog.parser,
+ org.protege.xmlcatalog.redirect,
+ org.protege.xmlcatalog.swing,
+ org.protege.xmlcatalog.write
+Bundle-Vendor: The Protege Development Team
+Bundle-ClassPath: .

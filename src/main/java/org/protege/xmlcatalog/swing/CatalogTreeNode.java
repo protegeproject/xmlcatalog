@@ -74,7 +74,7 @@ public class CatalogTreeNode implements TreeNode {
 	}
 
 	
-	public Enumeration children() {
+	public Enumeration<TreeNode> children() {
 		return new Enumeration<TreeNode>() {
 			int currentIndex = 0;
 			

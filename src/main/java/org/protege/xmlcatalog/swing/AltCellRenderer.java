@@ -19,7 +19,9 @@ import org.protege.xmlcatalog.entry.SystemEntry;
 import org.protege.xmlcatalog.entry.UriEntry;
 
 public class AltCellRenderer extends DefaultTreeCellRenderer {
-	private EntryRenderingVisitor visitor = new EntryRenderingVisitor();
+    private static final long serialVersionUID = 5872637762761958584L;
+    
+    private EntryRenderingVisitor visitor = new EntryRenderingVisitor();
 
 	public Component getTreeCellRendererComponent(JTree tree, Object value,
 												  boolean selected, boolean expanded, boolean leaf, int row,
