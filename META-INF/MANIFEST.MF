@@ -17,6 +17,7 @@ Import-Package: javax.swing,
  org.protege.xmlcatalog.redirect,
  org.protege.xmlcatalog.swing,
  org.protege.xmlcatalog.write,
+ org.semanticweb.owlapi.model;resolution:=optional,
  org.w3c.dom,
  org.xml.sax,
  org.xml.sax.helpers
