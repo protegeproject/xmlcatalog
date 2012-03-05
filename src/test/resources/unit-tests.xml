@@ -7,6 +7,7 @@
 				<class name="org.protege.xmlcatalog.ResolveTest" />
 				<class name="org.protege.xmlcatalog.CatalogTest" />
 				<class name="org.protege.xmlcatalog.ResolveWithRoundTripTest" />
+				<class name="org.protege.xmlcatalog.owlapi.IRIMapperTest"/>
 			</classes>
 		</test>
         <!--
