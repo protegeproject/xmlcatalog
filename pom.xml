@@ -7,7 +7,7 @@
     <artifactId>xmlcatalog</artifactId>
     <packaging>bundle</packaging>
     <name>xmlcatalog</name>
-    <version>1.0.2.SNAPSHOT</version>
+    <version>1.0.2_SNAPSHOT</version>
 
     <properties>
         <maven.compiler.source>1.5</maven.compiler.source>
@@ -48,6 +48,11 @@
           <artifactId>xml-resolver</artifactId>
           <version>1.2</version>
         </dependency>
+        <dependency>
+	      <groupId>owlapi</groupId>
+	      <artifactId>owlapi</artifactId>
+	      <version>3.2.5.svn1925_2012_02_15_0727</version>
+        </dependency>        
     </dependencies>
 
     <description>XML Catalog Management Tool</description>
