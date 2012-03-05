@@ -7,8 +7,8 @@
     <artifactId>xmlcatalog</artifactId>
     <packaging>bundle</packaging>
     <name>xmlcatalog</name>
-    <!-- <version>1.0.3_SNAPSHOT</version> -->
-    <version>1.0.3.2012_03_05_1405</version>
+    <version>1.0.3_SNAPSHOT</version>
+    <!-- <version>1.0.3.2012_03_05_1405</version> -->
 
     <properties>
         <maven.compiler.source>1.5</maven.compiler.source>
