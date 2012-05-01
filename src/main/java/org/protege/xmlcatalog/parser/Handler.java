@@ -25,6 +25,8 @@ import org.xml.sax.helpers.DefaultHandler;
 public class Handler extends DefaultHandler {
     private static final Logger logger = Logger.getLogger(Handler.class);
     
+    public final static String CATALOG_NAMESPACE         = "urn:oasis:names:tc:entity:xmlns:xml:catalog";
+    
     /* *********************** Elements *********************** */
     public final static String CATALOG_ELEMENT           = "catalog";
     public final static String GROUP_ELEMENT             = "group";
@@ -89,82 +91,85 @@ public class Handler extends DefaultHandler {
     
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) throws SAXException {
-        if (qName.equals(CATALOG_ELEMENT)) {
+    	if (!CATALOG_NAMESPACE.equals(uri)) {
+    		logger.warn("Found entry outside the XML Catalogs namespace - ignored");
+    	}
+    	else if (localName.equals(CATALOG_ELEMENT)) {
             catalog = new XMLCatalog(getId(attributes), outerContext, getPrefer(attributes), getXmlBase(attributes));
         }
-        else if (qName.equals(GROUP_ELEMENT)) {
+        else if (localName.equals(GROUP_ELEMENT)) {
             GroupEntry group = new GroupEntry(getId(attributes), getXmlBaseContext(), getPrefer(attributes),  getXmlBase(attributes));
             addEntry(group);
             groupStack.push(group);
         }
-        else if (qName.equals(PUBLIC_ELEMENT)) {
+        else if (localName.equals(PUBLIC_ELEMENT)) {
             addEntry(new PublicEntry(getId(attributes), 
                                      getXmlBaseContext(),
                                      attributes.getValue(PUBLIC_ID_ATTRIBUTE), 
                                      URI.create(attributes.getValue(URI_ATTRIBUTE)),
                                      getXmlBase(attributes)));
         }
-        else if (qName.equals(SYSTEM_ELEMENT)) {
+        else if (localName.equals(SYSTEM_ELEMENT)) {
             addEntry(new SystemEntry(getId(attributes), 
                                      getXmlBaseContext(),
                                      attributes.getValue(SYSTEM_ID_ATTRIBUTE), 
                                      URI.create(attributes.getValue(URI_ATTRIBUTE)),
                                      getXmlBase(attributes)));
         }
-        else if (qName.equals(REWRITE_SYSTEM_ELEMENT)) {
+        else if (localName.equals(REWRITE_SYSTEM_ELEMENT)) {
             addEntry(new RewriteSystemEntry(getId(attributes), 
                                             getXmlBaseContext(),
                                             attributes.getValue(SYSTEM_ID_START_ATTRIBUTE), 
                                             URI.create(attributes.getValue(REWRITE_PREFIX_ATTRIBUTE))));
         }
-        else  if (qName.equals(DELEGATE_PUBLIC_ELEMENT)) {
+        else  if (localName.equals(DELEGATE_PUBLIC_ELEMENT)) {
             addEntry(new DelegatePublicEntry(getId(attributes),
                                              getXmlBaseContext(),
                                              attributes.getValue(PUBLIC_ID_START_ATTRIBUTE),
                                              URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
                                              getXmlBase(attributes)));
         }
-        else  if (qName.equals(DELEGATE_SYSTEM_ELEMENT)) {
+        else  if (localName.equals(DELEGATE_SYSTEM_ELEMENT)) {
             addEntry(new DelegateSystemEntry(getId(attributes),
                                              getXmlBaseContext(),
                                              attributes.getValue(SYSTEM_ID_START_ATTRIBUTE),
                                              URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
                                              getXmlBase(attributes)));
         }
-        else  if (qName.equals(URI_ELEMENT)) {
+        else  if (localName.equals(URI_ELEMENT)) {
             addEntry(new UriEntry(getId(attributes),
                                   getXmlBaseContext(),
                                   attributes.getValue(URI_NAME_ATTRIBUTE),
                                   URI.create(attributes.getValue(URI_ATTRIBUTE)),
                                   getXmlBase(attributes)));
         }
-        else  if (qName.equals(REWRITE_URI_ELEMENT)) {
+        else  if (localName.equals(REWRITE_URI_ELEMENT)) {
             addEntry(new RewriteUriEntry(getId(attributes),
                                          getXmlBaseContext(),
                                          attributes.getValue(URI_START_STRING),
                                          URI.create(attributes.getValue(REWRITE_PREFIX_ATTRIBUTE))));
         }
-        else  if (qName.equals(DELEGATE_URI_ELEMENT)) {
+        else  if (localName.equals(DELEGATE_URI_ELEMENT)) {
             addEntry(new DelegateUriEntry(getId(attributes),
                                           getXmlBaseContext(),
                                           attributes.getValue(URI_START_STRING),
                                           URI.create(attributes.getValue(CATALOG_ATTRIBUTE)),
                                           getXmlBase(attributes)));
         }
-        else if (qName.equals(NEXT_CATALOG_ELEMENT)) {
+        else if (localName.equals(NEXT_CATALOG_ELEMENT)) {
             addEntry(new NextCatalogEntry(getId(attributes), 
                                           getXmlBaseContext(),
                                           URI.create(attributes.getValue(CATALOG_ATTRIBUTE)), 
                                           getXmlBase(attributes)));
         }
         else {
-            logger.error("Found unsupported element in xmlcatalog: " + qName);
+            logger.error("Found unsupported element in xmlcatalog: " + localName);
         }
     }
     
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
-        if (qName.equals(GROUP_ELEMENT)) {
+        if (uri.equals(CATALOG_NAMESPACE) && localName.equals(GROUP_ELEMENT)) {
             groupStack.pop();
         }
     }
@@ -197,7 +202,10 @@ public class Handler extends DefaultHandler {
     
     private Prefer getPrefer(Attributes attributes) {
         String preferString = attributes.getValue(PREFER_ATTRIBUTE);
-        if (preferString == null) {
+        if (preferString == null && catalog == null) {
+        	return null;
+        }
+        else if (preferString == null) {
             return getPrefer();
         }
         else if (preferString.toLowerCase().equals(PREFER_PUBLIC_VALUE)) {
