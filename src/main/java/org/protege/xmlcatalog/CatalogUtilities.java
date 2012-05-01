@@ -26,6 +26,7 @@ public class CatalogUtilities {
         try {
             URI xmlbase = catalog.toURI();
             SAXParserFactory factory = SAXParserFactory.newInstance();
+            factory.setNamespaceAware(true);
             Handler handler = new Handler(xmlbase);
             InputSource is = new InputSource(catalog.openStream());
             is.setEncoding("UTF-8");  // is this necessary?
