@@ -1,0 +1,8 @@
+<catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
+ 		 xml:base="file:/home/tredmond/Shared/">
+
+
+	<uri name="http://www.tigraworld.com/protege/ontology1.owl"
+	     xml:base="ontologies/"
+		 uri="simple/ontology1.owl"/>
+</catalog>
