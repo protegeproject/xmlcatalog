@@ -78,7 +78,21 @@ public class ResolveTest extends TestCase {
     
     public void test07() throws TransformerException, MalformedURLException, IOException {
         readCatalog("test/catalog07.xml");
+        doTest07();
 
+    }
+    
+    public void test08() throws TransformerException, MalformedURLException, IOException {
+        readCatalog("test/catalog08.xml");
+        doTest07();
+    }
+    
+    public void test09() throws TransformerException, MalformedURLException, IOException {
+        readCatalog("test/catalog09.xml");
+        doTest07();
+    }    
+    
+    private void doTest07() throws TransformerException {
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = URI.create("file:/home/tredmond/Shared/ontologies/simple/ontology1.owl");
         checkBothAlgorithmsSame(u, false);

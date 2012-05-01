@@ -28,4 +28,14 @@ public class CatalogTest extends TestCase {
             fail();
         }
     }
+    
+    public void testCatalog8() {
+        try {
+            CatalogUtilities.parseDocument(new File("test/catalog08.xml").toURI().toURL());
+        }
+        catch (Throwable t) {
+            log.warn("Test failed", t);
+            fail();
+        }
+    }
 }
