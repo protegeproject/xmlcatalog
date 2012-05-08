@@ -73,7 +73,7 @@
                   <Bundle-SymbolicName>org.protege.xmlcatalog</Bundle-SymbolicName>
                   <Bundle-Vendor>The Protege Development Team</Bundle-Vendor>
                   <Export-Package>
-                    *
+                    org.protege.xmlcatalog.*
                   </Export-Package>
                   <Import-Package>
                     *
