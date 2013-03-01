@@ -71,9 +71,8 @@ public class ResolveTest extends TestCase {
     public void test06() throws MalformedURLException, IOException, TransformerException {
         readCatalog("test/catalog06.xml");
         URI u = URI.create("http://www.tigraworld.com/protege/pizza.owl");
-        URI redirect = new File("/home/tredmond/Shared/ontologies/protege/pizza.owl").toURI();
+        // Predicting redirect is hard because it's system dependent.  Windows adds a "C:".
         checkBothAlgorithmsSame(u, true);
-        assertEquals(CatalogUtilities.getRedirect(u, catalog),redirect);
     }
     
     public void test07() throws TransformerException, MalformedURLException, IOException {
