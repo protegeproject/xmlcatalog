@@ -48,11 +48,11 @@
 	</mailingLists>
 	
 	<scm>
-		<connection>scm:svn:http://smi-protege.stanford.edu/repos/protege/protege4/libraries/xmlcatalog/trunk</connection>
-		<developerConnection>scm:svn:https://smi-protege.stanford.edu/repos/protege/protege4/libraries/xmlcatalog/trunk</developerConnection>
-		<url>http://smi-protege.stanford.edu/svn/protege4/libraries/xmlcatalog/</url>
+		<connection>scm:git:git@github.com:protegeproject/xmlcatalog.git</connection>
+		<developerConnection>scm:git:git@github.com:protegeproject/xmlcatalog.git</developerConnection>
+		<url>git@github.com:protegeproject/xmlcatalog.git</url>
 	</scm>
-
+	
     <properties>
 	    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
@@ -194,5 +194,4 @@
 			</plugin>
 		</plugins>
     </reporting>
-
 </project>
