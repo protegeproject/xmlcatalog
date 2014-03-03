@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <catalog prefer="public" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
-    <uri id="User Edited Redirect" name="http://test.org/TestPizzaImport.owl" uri="http://www.co-ode.org/ontologies/pizza/pizza.owl"/>
+    <uri id="User Edited Redirect" name="http://test.org/TestPizzaImport.owl" uri="http://protege.stanford.edu/ontologies/pizza/pizza.owl"/>
 </catalog>
