@@ -17,7 +17,7 @@ public class ResolveTest extends TestCase {
     private XMLCatalog catalog;
 
     public void test01() throws TransformerException, MalformedURLException, IOException {
-        readCatalog("test/catalog01.xml");
+        readCatalog("src/test/resources/catalog01.xml");
 
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = URI.create("file:/home/tredmond/Shared/ontologies/simple/ontology1.owl");
@@ -26,7 +26,7 @@ public class ResolveTest extends TestCase {
     }
     
     public void test02() throws MalformedURLException, IOException, TransformerException {
-        readCatalog("test/catalog02.xml");
+        readCatalog("src/test/resources/catalog02.xml");
 
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
         URI redirect = URI.create("file:/home/tredmond/Shared/simple/ontology1.owl");
@@ -35,19 +35,19 @@ public class ResolveTest extends TestCase {
     }
     
     public void test03() throws MalformedURLException, IOException, TransformerException {
-        readCatalog("test/catalog03.xml");
+        readCatalog("src/test/resources/catalog03.xml");
 
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
-        URI redirect = new File("test/simple/ontology1.owl").toURI();
+        URI redirect = new File("src/test/resources/simple/ontology1.owl").toURI();
         // needs trim  because of a seemingly silly problem involving the URI for the outer xml base.
         checkBothAlgorithmsSame(u, true);
         assertTrue(CatalogUtilities.getRedirect(u, catalog).equals(redirect));
     }
     
     public void test04() throws MalformedURLException, IOException, TransformerException {
-        readCatalog("test/catalog04.xml");
+        readCatalog("src/test/resources/catalog04.xml");
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
-        URI redirect = new File("test/dir1/dir2/simple/ontology1.owl").toURI();
+        URI redirect = new File("src/test/resources/dir1/dir2/simple/ontology1.owl").toURI();
         // The apache resolver behaves differently in Java 1.5 and Java 1.6
         // I have aligned this library with the 1.6 behavior
         if (!JunitUtilities.isJava5()) {
@@ -57,9 +57,9 @@ public class ResolveTest extends TestCase {
     }
     
     public void test05() throws MalformedURLException, IOException, TransformerException {
-        readCatalog("test/catalog05.xml");
+        readCatalog("src/test/resources/catalog05.xml");
         URI u = URI.create("http://www.tigraworld.com/protege/ontology1.owl");
-        URI redirect = new File("test/dir1/dir2/simple/ontology1.owl").toURI();
+        URI redirect = new File("src/test/resources/dir1/dir2/simple/ontology1.owl").toURI();
         // The apache resolver behaves differently in Java 1.5 and Java 1.6
         // I have aligned this library with the 1.6 behavior
         if (!JunitUtilities.isJava5()) {
@@ -69,25 +69,25 @@ public class ResolveTest extends TestCase {
     }
     
     public void test06() throws MalformedURLException, IOException, TransformerException {
-        readCatalog("test/catalog06.xml");
+        readCatalog("src/test/resources/catalog06.xml");
         URI u = URI.create("http://www.tigraworld.com/protege/pizza.owl");
         // Predicting redirect is hard because it's system dependent.  Windows adds a "C:".
         checkBothAlgorithmsSame(u, true);
     }
     
     public void test07() throws TransformerException, MalformedURLException, IOException {
-        readCatalog("test/catalog07.xml");
+        readCatalog("src/test/resources/catalog07.xml");
         doTest07();
 
     }
     
     public void test08() throws TransformerException, MalformedURLException, IOException {
-        readCatalog("test/catalog08.xml");
+        readCatalog("src/test/resources/catalog08.xml");
         doTest07();
     }
     
     public void test09() throws TransformerException, MalformedURLException, IOException {
-        readCatalog("test/catalog09.xml");
+        readCatalog("src/test/resources/catalog09.xml");
         doTest07();
     }    
     
