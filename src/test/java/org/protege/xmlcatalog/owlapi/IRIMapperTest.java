@@ -1,12 +1,12 @@
 package org.protege.xmlcatalog.owlapi;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.util.Set;
 
 import junit.framework.TestCase;
 
+import org.protege.xmlcatalog.CatalogUtilities;
 import org.semanticweb.owlapi.apibinding.OWLManager;
 import org.semanticweb.owlapi.model.IRI;
 import org.semanticweb.owlapi.model.OWLImportsDeclaration;
@@ -21,15 +21,16 @@ public class IRIMapperTest extends TestCase {
 
 	public void testIRIMapper() throws MalformedURLException, IOException, OWLOntologyCreationException {
 		OWLOntologyManager manager = OWLManager.createOWLOntologyManager();
-		manager.addIRIMapper(new XMLCatalogIRIMapper(new File("src/test/resources/owl/redirect-to-pizza.xml")));
-		OWLOntology ontology = manager.loadOntology(IRI.create(new File("src/test/resources/owl/TestFunnyPizzaImport.owl")));
+		manager.addIRIMapper(new XMLCatalogIRIMapper(CatalogUtilities.parseDocument(getClass().getResource("/owl/redirect-to-pizza.xml"))));
+		OWLOntology ontology = manager.loadOntologyFromOntologyDocument(getClass().getResourceAsStream("/owl/TestFunnyPizzaImport.owl"));
 		Set<OWLImportsDeclaration> importDeclarations = ontology.getImportsDeclarations();
 		assertEquals(1, importDeclarations.size());
 		assertEquals(IMPORT_LOCATION, importDeclarations.iterator().next().getIRI());
 		Set<OWLOntology> importedOntologies = ontology.getImports();
 		assertEquals(1, importedOntologies.size());
 		OWLOntology pizzaOntology = importedOntologies.iterator().next();
-		assertEquals(PIZZA_IRI, pizzaOntology.getOntologyID().getOntologyIRI());
+        assertEquals(PIZZA_IRI, pizzaOntology.getOntologyID().getOntologyIRI()
+                .get());
 		assertEquals(REDIRECT_LOCATION, manager.getOntologyDocumentIRI(pizzaOntology));
 	}
 }
