@@ -6,37 +6,26 @@ import java.net.URI;
 import org.apache.log4j.Logger;
 import org.protege.xmlcatalog.EntryVisitor;
 import org.protege.xmlcatalog.XMLCatalog;
-import org.protege.xmlcatalog.entry.DelegatePublicEntry;
-import org.protege.xmlcatalog.entry.DelegateSystemEntry;
-import org.protege.xmlcatalog.entry.DelegateUriEntry;
-import org.protege.xmlcatalog.entry.Entry;
-import org.protege.xmlcatalog.entry.GroupEntry;
-import org.protege.xmlcatalog.entry.NextCatalogEntry;
-import org.protege.xmlcatalog.entry.PublicEntry;
-import org.protege.xmlcatalog.entry.RewriteSystemEntry;
-import org.protege.xmlcatalog.entry.RewriteUriEntry;
-import org.protege.xmlcatalog.entry.SystemEntry;
-import org.protege.xmlcatalog.entry.UriEntry;
+import org.protege.xmlcatalog.entry.*;
 
 public class UriRedirectVisitor implements EntryVisitor {
     private static Logger log = Logger.getLogger(UriRedirectVisitor.class);
     private URI original;
     private URI redirect;
+    private URI rewritedUri;
+    private int rewriteBestSize = 0;
     
     public UriRedirectVisitor(URI original) {
         this.original = original;
     }
     
     public URI getRedirect() {
-        return redirect;
+        return rewritedUri == null ? redirect : rewritedUri;
     }
 
     public void visit(GroupEntry entry) {
         for (Entry subEntry : entry.getEntries()) {
             subEntry.accept(this);
-            if (redirect != null) {
-                break;
-            }
         }
     }
 
@@ -68,10 +57,17 @@ public class UriRedirectVisitor implements EntryVisitor {
 
     public void visit(RewriteUriEntry entry) {
         try {
-            String originalString = original.toString();
-            if (originalString.startsWith(entry.getUriStartString())) {
-                String suffix = originalString.substring(entry.getUriStartString().length());
-                redirect = URI.create(entry.getRewritePrefix().toString() + suffix);
+            String redirectedUri = redirect == null ? null : redirect.toString();
+            if(redirectedUri == null){
+                return;
+            }
+            if (redirectedUri.startsWith(entry.getUriStartString()) && entry.getUriStartString().length() > rewriteBestSize) {
+                String suffix = redirectedUri.substring(entry.getUriStartString().length());
+                rewritedUri = URI.create(entry.getRewritePrefix().toString() + suffix);
+                if(!rewritedUri.isAbsolute()){
+                    rewritedUri = AbstractUriEntry.resolveUriAgainstXmlBase(rewritedUri, entry.getXmlBaseContext());
+                }
+                rewriteBestSize = entry.getUriStartString().length();
             }
         }
         catch (Throwable e) {
@@ -105,9 +101,6 @@ public class UriRedirectVisitor implements EntryVisitor {
     private void visitCatalog(XMLCatalog catalog) {
         for (Entry subEntry : catalog.getEntries()) {
             subEntry.accept(this);
-            if (redirect != null) {
-                break;
-            }
         }
     }
 
