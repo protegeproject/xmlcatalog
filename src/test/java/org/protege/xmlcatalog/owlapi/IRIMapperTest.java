@@ -16,7 +16,7 @@ import org.semanticweb.owlapi.model.OWLOntologyManager;
 
 public class IRIMapperTest extends TestCase {
 	public final static IRI IMPORT_LOCATION = IRI.create("http://test.org/TestPizzaImport.owl");
-	public final static IRI PIZZA_IRI         = IRI.create("http://www.co-ode.org/ontologies/pizza/pizza.owl");
+	public final static IRI PIZZA_IRI         = IRI.create("http://www.co-ode.org/ontologies/pizza");
 	public final static IRI REDIRECT_LOCATION = IRI.create("http://protege.stanford.edu/ontologies/pizza/pizza.owl");
 
 	public void testIRIMapper() throws MalformedURLException, IOException, OWLOntologyCreationException {
