@@ -63,9 +63,6 @@ public class CatalogUtilities {
         UriRedirectVisitor visitor = new UriRedirectVisitor(original);
         for (Entry subEntry : catalog.getEntries()) {
             subEntry.accept(visitor);
-            if (visitor.getRedirect() != null) {
-                break;
-            }
         }
         return visitor.getRedirect() == null ? null : visitor.getRedirect();
     }

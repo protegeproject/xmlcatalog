@@ -1,6 +1,8 @@
 <catalog xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog"
          prefer="public">
-
+    <uri id="PizzaID" name="http://www.co-ode.org/ontologies/pizza/pizza.owl" uri="http://www.tigraworld.com/protege/pizza.owl"/>
+	<rewriteURI uriStartString="http://www.tigraworld"
+				rewritePrefix="file:/shouldNotBeUsed/ontologies"/>
 	<rewriteURI uriStartString="http://www.tigraworld.com"
 				rewritePrefix="file:/home/tredmond/Shared/ontologies"/>
 </catalog>
