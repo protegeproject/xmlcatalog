@@ -59,7 +59,7 @@ public class UriRedirectVisitor implements EntryVisitor {
         try {
             String redirectedUri = redirect == null ? null : redirect.toString();
             if(redirectedUri == null){
-                return;
+                redirectedUri = original.toString();
             }
             if (redirectedUri.startsWith(entry.getUriStartString()) && entry.getUriStartString().length() > rewriteBestSize) {
                 String suffix = redirectedUri.substring(entry.getUriStartString().length());
